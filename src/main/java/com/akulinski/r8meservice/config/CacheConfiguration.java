@@ -49,6 +49,12 @@ public class CacheConfiguration {
             createCache(cm, com.akulinski.r8meservice.domain.User.class.getName(), jcacheConfiguration);
             createCache(cm, com.akulinski.r8meservice.domain.Authority.class.getName(), jcacheConfiguration);
             createCache(cm, com.akulinski.r8meservice.domain.User.class.getName() + ".authorities", jcacheConfiguration);
+            createCache(cm, com.akulinski.r8meservice.domain.UserProfile.class.getName(), jcacheConfiguration);
+            createCache(cm, com.akulinski.r8meservice.domain.Rate.class.getName(), jcacheConfiguration);
+            createCache(cm, com.akulinski.r8meservice.domain.Comment.class.getName(), jcacheConfiguration);
+            createCache(cm, com.akulinski.r8meservice.domain.RateXProfile.class.getName(), jcacheConfiguration);
+            createCache(cm, com.akulinski.r8meservice.domain.CommentXProfile.class.getName(), jcacheConfiguration);
+            createCache(cm, com.akulinski.r8meservice.domain.FollowerXFollowed.class.getName(), jcacheConfiguration);
             // jhipster-needle-redis-add-entry
         };
     }

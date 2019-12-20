@@ -1,0 +1,46 @@
+entity UserProfile{
+	currentRating Double
+}
+
+
+entity Rate{
+	value Double,
+    question String,
+    timeStamp Instant
+}
+
+entity Comment{
+   comment String,
+   timeStamp Instant
+}
+
+entity RateXProfile{
+	//holder
+}
+
+entity CommentXProfile{
+	//holder
+}
+
+entity FollowerXFollowed{
+	//holder
+}
+
+relationship OneToOne{
+	UserProfile{user} to User
+}
+relationship OneToOne{
+	CommentXProfile{receiver} to UserProfile,
+	CommentXProfile{poster} to UserProfile,
+    CommentXProfile to Comment
+}
+relationship OneToOne{
+	RateXProfile{rated} to UserProfile,
+    RateXProfile{rater} to UserProfile,
+    RateXProfile{rate} to Rate
+}
+
+relationship OneToOne{
+	FollowerXFollowed{follower} to UserProfile,
+    FollowerXFollowed{followed} to UserProfile,
+}

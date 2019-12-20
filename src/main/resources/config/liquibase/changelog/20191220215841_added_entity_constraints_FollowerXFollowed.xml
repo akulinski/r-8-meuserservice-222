@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+    <!--
+        Added the constraints for entity FollowerXFollowed.
+    -->
+    <changeSet id="20191220215841-2" author="jhipster">
+        
+        <addForeignKeyConstraint baseColumnNames="follower_id"
+                                 baseTableName="follower_x_followed"
+                                 constraintName="fk_follower_x_followed_follower_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="user_profile"/>
+
+        <addForeignKeyConstraint baseColumnNames="followed_id"
+                                 baseTableName="follower_x_followed"
+                                 constraintName="fk_follower_x_followed_followed_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="user_profile"/>
+
+    </changeSet>
+</databaseChangeLog>

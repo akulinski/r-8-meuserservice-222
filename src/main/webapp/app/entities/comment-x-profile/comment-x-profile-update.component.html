@@ -1,0 +1,45 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+            <h2 id="jhi-comment-x-profile-heading">Create or edit a Comment X Profile</h2>
+            <div>
+                <jhi-alert-error></jhi-alert-error>
+                <div class="form-group" [hidden]="!editForm.get('id').value">
+                    <label for="id">ID</label>
+                    <input type="text" class="form-control" id="id" name="id" formControlName="id"
+                        readonly />
+                </div>
+
+                <div class="form-group">
+                    <label class="form-control-label" for="field_receiver">Receiver</label>
+                    <select class="form-control" id="field_receiver" name="receiver" formControlName="receiver">
+                        <option [ngValue]="null"></option>
+                        <option [ngValue]="userProfileOption.id === editForm.get('receiver').value?.id ? editForm.get('receiver').value : userProfileOption" *ngFor="let userProfileOption of receivers; trackBy: trackUserProfileById">{{userProfileOption.id}}</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_poster">Poster</label>
+                    <select class="form-control" id="field_poster" name="poster" formControlName="poster">
+                        <option [ngValue]="null"></option>
+                        <option [ngValue]="userProfileOption.id === editForm.get('poster').value?.id ? editForm.get('poster').value : userProfileOption" *ngFor="let userProfileOption of posters; trackBy: trackUserProfileById">{{userProfileOption.id}}</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_comment">Comment</label>
+                    <select class="form-control" id="field_comment" name="comment" formControlName="comment">
+                        <option [ngValue]="null"></option>
+                        <option [ngValue]="commentOption.id === editForm.get('comment').value?.id ? editForm.get('comment').value : commentOption" *ngFor="let commentOption of comments; trackBy: trackCommentById">{{commentOption.id}}</option>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <button type="button" id="cancel-save" class="btn btn-secondary"  (click)="previousState()">
+                    <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span>Cancel</span>
+                </button>
+                <button type="submit" id="save-entity" [disabled]="editForm.invalid || isSaving" class="btn btn-primary">
+                    <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span>Save</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

@@ -14,6 +14,16 @@
     <property name="uuidType" value="uuid" dbms="h2, postgresql"/>
 
     <include file="config/liquibase/changelog/00000000000000_initial_schema.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20191220215836_added_entity_UserProfile.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20191220215837_added_entity_Rate.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20191220215838_added_entity_Comment.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20191220215839_added_entity_RateXProfile.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20191220215840_added_entity_CommentXProfile.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20191220215841_added_entity_FollowerXFollowed.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
+    <include file="config/liquibase/changelog/20191220215839_added_entity_constraints_RateXProfile.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20191220215840_added_entity_constraints_CommentXProfile.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20191220215841_added_entity_constraints_FollowerXFollowed.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20191220215836_added_entity_constraints_UserProfile.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
 </databaseChangeLog>

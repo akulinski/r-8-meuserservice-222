@@ -1,0 +1,35 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="followerXFollowed">
+            <h2><span>Follower X Followed</span> {{followerXFollowed.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span>Follower</span></dt>
+                <dd>
+                    <div *ngIf="followerXFollowed.follower">
+                        <a [routerLink]="['/user-profile', followerXFollowed.follower?.id, 'view']">{{followerXFollowed.follower?.id}}</a>
+                    </div>
+                </dd>
+                <dt><span>Followed</span></dt>
+                <dd>
+                    <div *ngIf="followerXFollowed.followed">
+                        <a [routerLink]="['/user-profile', followerXFollowed.followed?.id, 'view']">{{followerXFollowed.followed?.id}}</a>
+                    </div>
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span> Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/follower-x-followed', followerXFollowed.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span> Edit</span>
+            </button>
+        </div>
+    </div>
+</div>

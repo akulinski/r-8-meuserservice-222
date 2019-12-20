@@ -3,8 +3,11 @@ package com.akulinski.r8meservice.service;
 import com.akulinski.r8meservice.config.Constants;
 import com.akulinski.r8meservice.domain.Authority;
 import com.akulinski.r8meservice.domain.User;
+import com.akulinski.r8meservice.domain.UserProfile;
 import com.akulinski.r8meservice.repository.AuthorityRepository;
+import com.akulinski.r8meservice.repository.UserProfileRepository;
 import com.akulinski.r8meservice.repository.UserRepository;
+import com.akulinski.r8meservice.repository.search.UserProfileSearchRepository;
 import com.akulinski.r8meservice.repository.search.UserSearchRepository;
 import com.akulinski.r8meservice.security.AuthoritiesConstants;
 import com.akulinski.r8meservice.security.SecurityUtils;
@@ -45,12 +48,18 @@ public class UserService {
 
     private final CacheManager cacheManager;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserSearchRepository userSearchRepository, AuthorityRepository authorityRepository, CacheManager cacheManager) {
+    private final UserProfileRepository userProfileRepository;
+
+    private final UserProfileSearchRepository userProfileSearchRepository;
+
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserSearchRepository userSearchRepository, AuthorityRepository authorityRepository, CacheManager cacheManager, UserProfileRepository userProfileRepository, UserProfileSearchRepository userProfileSearchRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.userSearchRepository = userSearchRepository;
         this.authorityRepository = authorityRepository;
         this.cacheManager = cacheManager;
+        this.userProfileRepository = userProfileRepository;
+        this.userProfileSearchRepository = userProfileSearchRepository;
     }
 
     public Optional<User> activateRegistration(String key) {
@@ -104,6 +113,25 @@ public class UserService {
                 throw new EmailAlreadyUsedException();
             }
         });
+        User newUser = getUser(userDTO, password);
+
+        createProfile(newUser);
+
+        log.debug("Created Information for User: {}", newUser);
+        return newUser;
+    }
+
+    private void createProfile(User newUser) {
+        UserProfile userProfile = new UserProfile();
+        userProfile.setUser(newUser);
+        userProfile.setCurrentRating(-1.0);
+        userProfileRepository.save(userProfile);
+        userProfileSearchRepository.save(userProfile);
+
+        cacheManager.getCache(UserProfileRepository.PROFILE_BY_USER_LOGIN).put(newUser.getLogin(), userProfile);
+    }
+
+    private User getUser(UserDTO userDTO, String password) {
         User newUser = new User();
         String encryptedPassword = passwordEncoder.encode(password);
         newUser.setLogin(userDTO.getLogin().toLowerCase());
@@ -124,7 +152,6 @@ public class UserService {
         userRepository.save(newUser);
         userSearchRepository.save(newUser);
         this.clearUserCaches(newUser);
-        log.debug("Created Information for User: {}", newUser);
         return newUser;
     }
 
@@ -287,6 +314,10 @@ public class UserService {
                 userRepository.delete(user);
                 userSearchRepository.delete(user);
                 this.clearUserCaches(user);
+
+                this.userProfileRepository.deleteAllByUser(user);
+                this.userProfileSearchRepository.deleteAllByUser(user);
+                this.cacheManager.getCache(UserProfileRepository.PROFILE_BY_USER_LOGIN).clear();
             });
     }
 

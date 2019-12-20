@@ -1,0 +1,41 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="rateXProfile">
+            <h2><span>Rate X Profile</span> {{rateXProfile.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span>Rated</span></dt>
+                <dd>
+                    <div *ngIf="rateXProfile.rated">
+                        <a [routerLink]="['/user-profile', rateXProfile.rated?.id, 'view']">{{rateXProfile.rated?.id}}</a>
+                    </div>
+                </dd>
+                <dt><span>Rater</span></dt>
+                <dd>
+                    <div *ngIf="rateXProfile.rater">
+                        <a [routerLink]="['/user-profile', rateXProfile.rater?.id, 'view']">{{rateXProfile.rater?.id}}</a>
+                    </div>
+                </dd>
+                <dt><span>Rate</span></dt>
+                <dd>
+                    <div *ngIf="rateXProfile.rate">
+                        <a [routerLink]="['/rate', rateXProfile.rate?.id, 'view']">{{rateXProfile.rate?.id}}</a>
+                    </div>
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span> Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/rate-x-profile', rateXProfile.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span> Edit</span>
+            </button>
+        </div>
+    </div>
+</div>
