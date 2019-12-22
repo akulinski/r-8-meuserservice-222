@@ -12,16 +12,16 @@
 
                 <div class="form-group">
                     <label class="form-control-label" for="field_follower">Follower</label>
-                    <select class="form-control" id="field_follower" name="follower" formControlName="follower">
+                    <select class="form-control" id="field_follower" name="follower" formControlName="followerId">
                         <option [ngValue]="null"></option>
-                        <option [ngValue]="userProfileOption.id === editForm.get('follower').value?.id ? editForm.get('follower').value : userProfileOption" *ngFor="let userProfileOption of followers; trackBy: trackUserProfileById">{{userProfileOption.id}}</option>
+                        <option [ngValue]="userProfileOption.id" *ngFor="let userProfileOption of followers; trackBy: trackUserProfileById">{{userProfileOption.id}}</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label class="form-control-label" for="field_followed">Followed</label>
-                    <select class="form-control" id="field_followed" name="followed" formControlName="followed">
+                    <select class="form-control" id="field_followed" name="followed" formControlName="followedId">
                         <option [ngValue]="null"></option>
-                        <option [ngValue]="userProfileOption.id === editForm.get('followed').value?.id ? editForm.get('followed').value : userProfileOption" *ngFor="let userProfileOption of followeds; trackBy: trackUserProfileById">{{userProfileOption.id}}</option>
+                        <option [ngValue]="userProfileOption.id" *ngFor="let userProfileOption of followeds; trackBy: trackUserProfileById">{{userProfileOption.id}}</option>
                     </select>
                 </div>
             </div>

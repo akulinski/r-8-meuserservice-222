@@ -12,23 +12,23 @@
 
                 <div class="form-group">
                     <label class="form-control-label" for="field_receiver">Receiver</label>
-                    <select class="form-control" id="field_receiver" name="receiver" formControlName="receiver">
+                    <select class="form-control" id="field_receiver" name="receiver" formControlName="receiverId">
                         <option [ngValue]="null"></option>
-                        <option [ngValue]="userProfileOption.id === editForm.get('receiver').value?.id ? editForm.get('receiver').value : userProfileOption" *ngFor="let userProfileOption of receivers; trackBy: trackUserProfileById">{{userProfileOption.id}}</option>
+                        <option [ngValue]="userProfileOption.id" *ngFor="let userProfileOption of receivers; trackBy: trackUserProfileById">{{userProfileOption.id}}</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label class="form-control-label" for="field_poster">Poster</label>
-                    <select class="form-control" id="field_poster" name="poster" formControlName="poster">
+                    <select class="form-control" id="field_poster" name="poster" formControlName="posterId">
                         <option [ngValue]="null"></option>
-                        <option [ngValue]="userProfileOption.id === editForm.get('poster').value?.id ? editForm.get('poster').value : userProfileOption" *ngFor="let userProfileOption of posters; trackBy: trackUserProfileById">{{userProfileOption.id}}</option>
+                        <option [ngValue]="userProfileOption.id" *ngFor="let userProfileOption of posters; trackBy: trackUserProfileById">{{userProfileOption.id}}</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label class="form-control-label" for="field_comment">Comment</label>
-                    <select class="form-control" id="field_comment" name="comment" formControlName="comment">
+                    <select class="form-control" id="field_comment" name="comment" formControlName="commentId">
                         <option [ngValue]="null"></option>
-                        <option [ngValue]="commentOption.id === editForm.get('comment').value?.id ? editForm.get('comment').value : commentOption" *ngFor="let commentOption of comments; trackBy: trackCommentById">{{commentOption.id}}</option>
+                        <option [ngValue]="commentOption.id" *ngFor="let commentOption of comments; trackBy: trackCommentById">{{commentOption.id}}</option>
                     </select>
                 </div>
             </div>

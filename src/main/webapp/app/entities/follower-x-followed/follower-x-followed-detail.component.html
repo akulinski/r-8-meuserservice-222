@@ -7,14 +7,14 @@
             <dl class="row-md jh-entity-details">
                 <dt><span>Follower</span></dt>
                 <dd>
-                    <div *ngIf="followerXFollowed.follower">
-                        <a [routerLink]="['/user-profile', followerXFollowed.follower?.id, 'view']">{{followerXFollowed.follower?.id}}</a>
+                    <div *ngIf="followerXFollowed.followerId">
+                        <a [routerLink]="['/user-profile', followerXFollowed.followerId, 'view']">{{followerXFollowed.followerId}}</a>
                     </div>
                 </dd>
                 <dt><span>Followed</span></dt>
                 <dd>
-                    <div *ngIf="followerXFollowed.followed">
-                        <a [routerLink]="['/user-profile', followerXFollowed.followed?.id, 'view']">{{followerXFollowed.followed?.id}}</a>
+                    <div *ngIf="followerXFollowed.followedId">
+                        <a [routerLink]="['/user-profile', followerXFollowed.followedId, 'view']">{{followerXFollowed.followedId}}</a>
                     </div>
                 </dd>
             </dl>

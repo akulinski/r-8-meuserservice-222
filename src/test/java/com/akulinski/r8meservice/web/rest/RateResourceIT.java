@@ -5,6 +5,9 @@ import com.akulinski.r8meservice.R8Meuserservice2App;
 import com.akulinski.r8meservice.domain.Rate;
 import com.akulinski.r8meservice.repository.RateRepository;
 import com.akulinski.r8meservice.repository.search.RateSearchRepository;
+import com.akulinski.r8meservice.service.RateService;
+import com.akulinski.r8meservice.service.dto.RateDTO;
+import com.akulinski.r8meservice.service.mapper.RateMapper;
 import com.akulinski.r8meservice.web.rest.errors.ExceptionTranslator;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -54,6 +57,12 @@ public class RateResourceIT {
     @Autowired
     private RateRepository rateRepository;
 
+    @Autowired
+    private RateMapper rateMapper;
+
+    @Autowired
+    private RateService rateService;
+
     /**
      * This repository is mocked in the com.akulinski.r8meservice.repository.search test package.
      *
@@ -84,7 +93,7 @@ public class RateResourceIT {
     @BeforeEach
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final RateResource rateResource = new RateResource(rateRepository, mockRateSearchRepository);
+        final RateResource rateResource = new RateResource(rateService);
         this.restRateMockMvc = MockMvcBuilders.standaloneSetup(rateResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -131,9 +140,10 @@ public class RateResourceIT {
         int databaseSizeBeforeCreate = rateRepository.findAll().size();
 
         // Create the Rate
+        RateDTO rateDTO = rateMapper.toDto(rate);
         restRateMockMvc.perform(post("/api/rates")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(rate)))
+            .content(TestUtil.convertObjectToJsonBytes(rateDTO)))
             .andExpect(status().isCreated());
 
         // Validate the Rate in the database
@@ -155,11 +165,12 @@ public class RateResourceIT {
 
         // Create the Rate with an existing ID
         rate.setId(1L);
+        RateDTO rateDTO = rateMapper.toDto(rate);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restRateMockMvc.perform(post("/api/rates")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(rate)))
+            .content(TestUtil.convertObjectToJsonBytes(rateDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Rate in the database
@@ -227,10 +238,11 @@ public class RateResourceIT {
             .value(UPDATED_VALUE)
             .question(UPDATED_QUESTION)
             .timeStamp(UPDATED_TIME_STAMP);
+        RateDTO rateDTO = rateMapper.toDto(updatedRate);
 
         restRateMockMvc.perform(put("/api/rates")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(updatedRate)))
+            .content(TestUtil.convertObjectToJsonBytes(rateDTO)))
             .andExpect(status().isOk());
 
         // Validate the Rate in the database
@@ -251,11 +263,12 @@ public class RateResourceIT {
         int databaseSizeBeforeUpdate = rateRepository.findAll().size();
 
         // Create the Rate
+        RateDTO rateDTO = rateMapper.toDto(rate);
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restRateMockMvc.perform(put("/api/rates")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(rate)))
+            .content(TestUtil.convertObjectToJsonBytes(rateDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Rate in the database

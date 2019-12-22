@@ -1,3 +1,6 @@
+dto * with mapstruct
+service * with serviceClass
+
 entity UserProfile{
 	currentRating Double
 }

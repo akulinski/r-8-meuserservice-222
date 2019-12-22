@@ -5,6 +5,9 @@ import com.akulinski.r8meservice.R8Meuserservice2App;
 import com.akulinski.r8meservice.domain.UserProfile;
 import com.akulinski.r8meservice.repository.UserProfileRepository;
 import com.akulinski.r8meservice.repository.search.UserProfileSearchRepository;
+import com.akulinski.r8meservice.service.UserProfileService;
+import com.akulinski.r8meservice.service.dto.UserProfileDTO;
+import com.akulinski.r8meservice.service.mapper.UserProfileMapper;
 import com.akulinski.r8meservice.web.rest.errors.ExceptionTranslator;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -46,6 +49,12 @@ public class UserProfileResourceIT {
     @Autowired
     private UserProfileRepository userProfileRepository;
 
+    @Autowired
+    private UserProfileMapper userProfileMapper;
+
+    @Autowired
+    private UserProfileService userProfileService;
+
     /**
      * This repository is mocked in the com.akulinski.r8meservice.repository.search test package.
      *
@@ -76,7 +85,7 @@ public class UserProfileResourceIT {
     @BeforeEach
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final UserProfileResource userProfileResource = new UserProfileResource(userProfileRepository, mockUserProfileSearchRepository);
+        final UserProfileResource userProfileResource = new UserProfileResource(userProfileService);
         this.restUserProfileMockMvc = MockMvcBuilders.standaloneSetup(userProfileResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -119,9 +128,10 @@ public class UserProfileResourceIT {
         int databaseSizeBeforeCreate = userProfileRepository.findAll().size();
 
         // Create the UserProfile
+        UserProfileDTO userProfileDTO = userProfileMapper.toDto(userProfile);
         restUserProfileMockMvc.perform(post("/api/user-profiles")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(userProfile)))
+            .content(TestUtil.convertObjectToJsonBytes(userProfileDTO)))
             .andExpect(status().isCreated());
 
         // Validate the UserProfile in the database
@@ -141,11 +151,12 @@ public class UserProfileResourceIT {
 
         // Create the UserProfile with an existing ID
         userProfile.setId(1L);
+        UserProfileDTO userProfileDTO = userProfileMapper.toDto(userProfile);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restUserProfileMockMvc.perform(post("/api/user-profiles")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(userProfile)))
+            .content(TestUtil.convertObjectToJsonBytes(userProfileDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the UserProfile in the database
@@ -207,10 +218,11 @@ public class UserProfileResourceIT {
         em.detach(updatedUserProfile);
         updatedUserProfile
             .currentRating(UPDATED_CURRENT_RATING);
+        UserProfileDTO userProfileDTO = userProfileMapper.toDto(updatedUserProfile);
 
         restUserProfileMockMvc.perform(put("/api/user-profiles")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(updatedUserProfile)))
+            .content(TestUtil.convertObjectToJsonBytes(userProfileDTO)))
             .andExpect(status().isOk());
 
         // Validate the UserProfile in the database
@@ -229,11 +241,12 @@ public class UserProfileResourceIT {
         int databaseSizeBeforeUpdate = userProfileRepository.findAll().size();
 
         // Create the UserProfile
+        UserProfileDTO userProfileDTO = userProfileMapper.toDto(userProfile);
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restUserProfileMockMvc.perform(put("/api/user-profiles")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(userProfile)))
+            .content(TestUtil.convertObjectToJsonBytes(userProfileDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the UserProfile in the database

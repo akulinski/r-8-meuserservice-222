@@ -5,6 +5,9 @@ import com.akulinski.r8meservice.R8Meuserservice2App;
 import com.akulinski.r8meservice.domain.FollowerXFollowed;
 import com.akulinski.r8meservice.repository.FollowerXFollowedRepository;
 import com.akulinski.r8meservice.repository.search.FollowerXFollowedSearchRepository;
+import com.akulinski.r8meservice.service.FollowerXFollowedService;
+import com.akulinski.r8meservice.service.dto.FollowerXFollowedDTO;
+import com.akulinski.r8meservice.service.mapper.FollowerXFollowedMapper;
 import com.akulinski.r8meservice.web.rest.errors.ExceptionTranslator;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -43,6 +46,12 @@ public class FollowerXFollowedResourceIT {
     @Autowired
     private FollowerXFollowedRepository followerXFollowedRepository;
 
+    @Autowired
+    private FollowerXFollowedMapper followerXFollowedMapper;
+
+    @Autowired
+    private FollowerXFollowedService followerXFollowedService;
+
     /**
      * This repository is mocked in the com.akulinski.r8meservice.repository.search test package.
      *
@@ -73,7 +82,7 @@ public class FollowerXFollowedResourceIT {
     @BeforeEach
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final FollowerXFollowedResource followerXFollowedResource = new FollowerXFollowedResource(followerXFollowedRepository, mockFollowerXFollowedSearchRepository);
+        final FollowerXFollowedResource followerXFollowedResource = new FollowerXFollowedResource(followerXFollowedService);
         this.restFollowerXFollowedMockMvc = MockMvcBuilders.standaloneSetup(followerXFollowedResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -114,9 +123,10 @@ public class FollowerXFollowedResourceIT {
         int databaseSizeBeforeCreate = followerXFollowedRepository.findAll().size();
 
         // Create the FollowerXFollowed
+        FollowerXFollowedDTO followerXFollowedDTO = followerXFollowedMapper.toDto(followerXFollowed);
         restFollowerXFollowedMockMvc.perform(post("/api/follower-x-followeds")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(followerXFollowed)))
+            .content(TestUtil.convertObjectToJsonBytes(followerXFollowedDTO)))
             .andExpect(status().isCreated());
 
         // Validate the FollowerXFollowed in the database
@@ -135,11 +145,12 @@ public class FollowerXFollowedResourceIT {
 
         // Create the FollowerXFollowed with an existing ID
         followerXFollowed.setId(1L);
+        FollowerXFollowedDTO followerXFollowedDTO = followerXFollowedMapper.toDto(followerXFollowed);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restFollowerXFollowedMockMvc.perform(post("/api/follower-x-followeds")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(followerXFollowed)))
+            .content(TestUtil.convertObjectToJsonBytes(followerXFollowedDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the FollowerXFollowed in the database
@@ -197,10 +208,11 @@ public class FollowerXFollowedResourceIT {
         FollowerXFollowed updatedFollowerXFollowed = followerXFollowedRepository.findById(followerXFollowed.getId()).get();
         // Disconnect from session so that the updates on updatedFollowerXFollowed are not directly saved in db
         em.detach(updatedFollowerXFollowed);
+        FollowerXFollowedDTO followerXFollowedDTO = followerXFollowedMapper.toDto(updatedFollowerXFollowed);
 
         restFollowerXFollowedMockMvc.perform(put("/api/follower-x-followeds")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(updatedFollowerXFollowed)))
+            .content(TestUtil.convertObjectToJsonBytes(followerXFollowedDTO)))
             .andExpect(status().isOk());
 
         // Validate the FollowerXFollowed in the database
@@ -218,11 +230,12 @@ public class FollowerXFollowedResourceIT {
         int databaseSizeBeforeUpdate = followerXFollowedRepository.findAll().size();
 
         // Create the FollowerXFollowed
+        FollowerXFollowedDTO followerXFollowedDTO = followerXFollowedMapper.toDto(followerXFollowed);
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restFollowerXFollowedMockMvc.perform(put("/api/follower-x-followeds")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(followerXFollowed)))
+            .content(TestUtil.convertObjectToJsonBytes(followerXFollowedDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the FollowerXFollowed in the database

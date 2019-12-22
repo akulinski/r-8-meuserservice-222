@@ -24,8 +24,8 @@ export class FollowerXFollowedUpdateComponent implements OnInit {
 
   editForm = this.fb.group({
     id: [],
-    follower: [],
-    followed: []
+    followerId: [],
+    followedId: []
   });
 
   constructor(
@@ -43,11 +43,11 @@ export class FollowerXFollowedUpdateComponent implements OnInit {
     });
     this.userProfileService.query({ filter: 'followerxfollowed-is-null' }).subscribe(
       (res: HttpResponse<IUserProfile[]>) => {
-        if (!this.editForm.get('follower').value || !this.editForm.get('follower').value.id) {
+        if (!this.editForm.get('followerId').value) {
           this.followers = res.body;
         } else {
           this.userProfileService
-            .find(this.editForm.get('follower').value.id)
+            .find(this.editForm.get('followerId').value)
             .subscribe(
               (subRes: HttpResponse<IUserProfile>) => (this.followers = [subRes.body].concat(res.body)),
               (subRes: HttpErrorResponse) => this.onError(subRes.message)
@@ -58,11 +58,11 @@ export class FollowerXFollowedUpdateComponent implements OnInit {
     );
     this.userProfileService.query({ filter: 'followerxfollowed-is-null' }).subscribe(
       (res: HttpResponse<IUserProfile[]>) => {
-        if (!this.editForm.get('followed').value || !this.editForm.get('followed').value.id) {
+        if (!this.editForm.get('followedId').value) {
           this.followeds = res.body;
         } else {
           this.userProfileService
-            .find(this.editForm.get('followed').value.id)
+            .find(this.editForm.get('followedId').value)
             .subscribe(
               (subRes: HttpResponse<IUserProfile>) => (this.followeds = [subRes.body].concat(res.body)),
               (subRes: HttpErrorResponse) => this.onError(subRes.message)
@@ -76,8 +76,8 @@ export class FollowerXFollowedUpdateComponent implements OnInit {
   updateForm(followerXFollowed: IFollowerXFollowed) {
     this.editForm.patchValue({
       id: followerXFollowed.id,
-      follower: followerXFollowed.follower,
-      followed: followerXFollowed.followed
+      followerId: followerXFollowed.followerId,
+      followedId: followerXFollowed.followedId
     });
   }
 
@@ -99,8 +99,8 @@ export class FollowerXFollowedUpdateComponent implements OnInit {
     return {
       ...new FollowerXFollowed(),
       id: this.editForm.get(['id']).value,
-      follower: this.editForm.get(['follower']).value,
-      followed: this.editForm.get(['followed']).value
+      followerId: this.editForm.get(['followerId']).value,
+      followedId: this.editForm.get(['followedId']).value
     };
   }
 

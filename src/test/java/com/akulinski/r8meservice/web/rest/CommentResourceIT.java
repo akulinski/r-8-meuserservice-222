@@ -5,6 +5,9 @@ import com.akulinski.r8meservice.R8Meuserservice2App;
 import com.akulinski.r8meservice.domain.Comment;
 import com.akulinski.r8meservice.repository.CommentRepository;
 import com.akulinski.r8meservice.repository.search.CommentSearchRepository;
+import com.akulinski.r8meservice.service.CommentService;
+import com.akulinski.r8meservice.service.dto.CommentDTO;
+import com.akulinski.r8meservice.service.mapper.CommentMapper;
 import com.akulinski.r8meservice.web.rest.errors.ExceptionTranslator;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -51,6 +54,12 @@ public class CommentResourceIT {
     @Autowired
     private CommentRepository commentRepository;
 
+    @Autowired
+    private CommentMapper commentMapper;
+
+    @Autowired
+    private CommentService commentService;
+
     /**
      * This repository is mocked in the com.akulinski.r8meservice.repository.search test package.
      *
@@ -81,7 +90,7 @@ public class CommentResourceIT {
     @BeforeEach
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final CommentResource commentResource = new CommentResource(commentRepository, mockCommentSearchRepository);
+        final CommentResource commentResource = new CommentResource(commentService);
         this.restCommentMockMvc = MockMvcBuilders.standaloneSetup(commentResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -126,9 +135,10 @@ public class CommentResourceIT {
         int databaseSizeBeforeCreate = commentRepository.findAll().size();
 
         // Create the Comment
+        CommentDTO commentDTO = commentMapper.toDto(comment);
         restCommentMockMvc.perform(post("/api/comments")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(comment)))
+            .content(TestUtil.convertObjectToJsonBytes(commentDTO)))
             .andExpect(status().isCreated());
 
         // Validate the Comment in the database
@@ -149,11 +159,12 @@ public class CommentResourceIT {
 
         // Create the Comment with an existing ID
         comment.setId(1L);
+        CommentDTO commentDTO = commentMapper.toDto(comment);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restCommentMockMvc.perform(post("/api/comments")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(comment)))
+            .content(TestUtil.convertObjectToJsonBytes(commentDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Comment in the database
@@ -218,10 +229,11 @@ public class CommentResourceIT {
         updatedComment
             .comment(UPDATED_COMMENT)
             .timeStamp(UPDATED_TIME_STAMP);
+        CommentDTO commentDTO = commentMapper.toDto(updatedComment);
 
         restCommentMockMvc.perform(put("/api/comments")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(updatedComment)))
+            .content(TestUtil.convertObjectToJsonBytes(commentDTO)))
             .andExpect(status().isOk());
 
         // Validate the Comment in the database
@@ -241,11 +253,12 @@ public class CommentResourceIT {
         int databaseSizeBeforeUpdate = commentRepository.findAll().size();
 
         // Create the Comment
+        CommentDTO commentDTO = commentMapper.toDto(comment);
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restCommentMockMvc.perform(put("/api/comments")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(comment)))
+            .content(TestUtil.convertObjectToJsonBytes(commentDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Comment in the database

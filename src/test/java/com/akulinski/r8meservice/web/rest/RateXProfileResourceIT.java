@@ -5,6 +5,9 @@ import com.akulinski.r8meservice.R8Meuserservice2App;
 import com.akulinski.r8meservice.domain.RateXProfile;
 import com.akulinski.r8meservice.repository.RateXProfileRepository;
 import com.akulinski.r8meservice.repository.search.RateXProfileSearchRepository;
+import com.akulinski.r8meservice.service.RateXProfileService;
+import com.akulinski.r8meservice.service.dto.RateXProfileDTO;
+import com.akulinski.r8meservice.service.mapper.RateXProfileMapper;
 import com.akulinski.r8meservice.web.rest.errors.ExceptionTranslator;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -43,6 +46,12 @@ public class RateXProfileResourceIT {
     @Autowired
     private RateXProfileRepository rateXProfileRepository;
 
+    @Autowired
+    private RateXProfileMapper rateXProfileMapper;
+
+    @Autowired
+    private RateXProfileService rateXProfileService;
+
     /**
      * This repository is mocked in the com.akulinski.r8meservice.repository.search test package.
      *
@@ -73,7 +82,7 @@ public class RateXProfileResourceIT {
     @BeforeEach
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final RateXProfileResource rateXProfileResource = new RateXProfileResource(rateXProfileRepository, mockRateXProfileSearchRepository);
+        final RateXProfileResource rateXProfileResource = new RateXProfileResource(rateXProfileService);
         this.restRateXProfileMockMvc = MockMvcBuilders.standaloneSetup(rateXProfileResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -114,9 +123,10 @@ public class RateXProfileResourceIT {
         int databaseSizeBeforeCreate = rateXProfileRepository.findAll().size();
 
         // Create the RateXProfile
+        RateXProfileDTO rateXProfileDTO = rateXProfileMapper.toDto(rateXProfile);
         restRateXProfileMockMvc.perform(post("/api/rate-x-profiles")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(rateXProfile)))
+            .content(TestUtil.convertObjectToJsonBytes(rateXProfileDTO)))
             .andExpect(status().isCreated());
 
         // Validate the RateXProfile in the database
@@ -135,11 +145,12 @@ public class RateXProfileResourceIT {
 
         // Create the RateXProfile with an existing ID
         rateXProfile.setId(1L);
+        RateXProfileDTO rateXProfileDTO = rateXProfileMapper.toDto(rateXProfile);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restRateXProfileMockMvc.perform(post("/api/rate-x-profiles")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(rateXProfile)))
+            .content(TestUtil.convertObjectToJsonBytes(rateXProfileDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the RateXProfile in the database
@@ -197,10 +208,11 @@ public class RateXProfileResourceIT {
         RateXProfile updatedRateXProfile = rateXProfileRepository.findById(rateXProfile.getId()).get();
         // Disconnect from session so that the updates on updatedRateXProfile are not directly saved in db
         em.detach(updatedRateXProfile);
+        RateXProfileDTO rateXProfileDTO = rateXProfileMapper.toDto(updatedRateXProfile);
 
         restRateXProfileMockMvc.perform(put("/api/rate-x-profiles")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(updatedRateXProfile)))
+            .content(TestUtil.convertObjectToJsonBytes(rateXProfileDTO)))
             .andExpect(status().isOk());
 
         // Validate the RateXProfile in the database
@@ -218,11 +230,12 @@ public class RateXProfileResourceIT {
         int databaseSizeBeforeUpdate = rateXProfileRepository.findAll().size();
 
         // Create the RateXProfile
+        RateXProfileDTO rateXProfileDTO = rateXProfileMapper.toDto(rateXProfile);
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restRateXProfileMockMvc.perform(put("/api/rate-x-profiles")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(rateXProfile)))
+            .content(TestUtil.convertObjectToJsonBytes(rateXProfileDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the RateXProfile in the database

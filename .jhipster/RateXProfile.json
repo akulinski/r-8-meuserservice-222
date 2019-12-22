@@ -1,0 +1,40 @@
+{
+    "name": "RateXProfile",
+    "fields": [],
+    "relationships": [
+        {
+            "relationshipType": "one-to-one",
+            "otherEntityName": "userProfile",
+            "otherEntityRelationshipName": "rateXProfile",
+            "relationshipName": "rated",
+            "otherEntityField": "id",
+            "ownerSide": true
+        },
+        {
+            "relationshipType": "one-to-one",
+            "otherEntityName": "userProfile",
+            "otherEntityRelationshipName": "rateXProfile",
+            "relationshipName": "rater",
+            "otherEntityField": "id",
+            "ownerSide": true
+        },
+        {
+            "relationshipType": "one-to-one",
+            "otherEntityName": "rate",
+            "otherEntityRelationshipName": "rateXProfile",
+            "relationshipName": "rate",
+            "otherEntityField": "id",
+            "ownerSide": true
+        }
+    ],
+    "changelogDate": "20191220215839",
+    "entityTableName": "rate_x_profile",
+    "dto": "mapstruct",
+    "pagination": "no",
+    "service": "serviceClass",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "readOnly": false,
+    "clientRootFolder": "",
+    "applications": "*"
+}

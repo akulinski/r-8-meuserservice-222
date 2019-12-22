@@ -1,0 +1,40 @@
+{
+    "name": "CommentXProfile",
+    "fields": [],
+    "relationships": [
+        {
+            "relationshipType": "one-to-one",
+            "otherEntityName": "userProfile",
+            "otherEntityRelationshipName": "commentXProfile",
+            "relationshipName": "receiver",
+            "otherEntityField": "id",
+            "ownerSide": true
+        },
+        {
+            "relationshipType": "one-to-one",
+            "otherEntityName": "userProfile",
+            "otherEntityRelationshipName": "commentXProfile",
+            "relationshipName": "poster",
+            "otherEntityField": "id",
+            "ownerSide": true
+        },
+        {
+            "relationshipType": "one-to-one",
+            "otherEntityName": "comment",
+            "otherEntityRelationshipName": "commentXProfile",
+            "relationshipName": "comment",
+            "otherEntityField": "id",
+            "ownerSide": true
+        }
+    ],
+    "changelogDate": "20191220215840",
+    "entityTableName": "comment_x_profile",
+    "dto": "mapstruct",
+    "pagination": "no",
+    "service": "serviceClass",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "readOnly": false,
+    "clientRootFolder": "",
+    "applications": "*"
+}

@@ -28,9 +28,9 @@ export class CommentXProfileUpdateComponent implements OnInit {
 
   editForm = this.fb.group({
     id: [],
-    receiver: [],
-    poster: [],
-    comment: []
+    receiverId: [],
+    posterId: [],
+    commentId: []
   });
 
   constructor(
@@ -49,11 +49,11 @@ export class CommentXProfileUpdateComponent implements OnInit {
     });
     this.userProfileService.query({ filter: 'commentxprofile-is-null' }).subscribe(
       (res: HttpResponse<IUserProfile[]>) => {
-        if (!this.editForm.get('receiver').value || !this.editForm.get('receiver').value.id) {
+        if (!this.editForm.get('receiverId').value) {
           this.receivers = res.body;
         } else {
           this.userProfileService
-            .find(this.editForm.get('receiver').value.id)
+            .find(this.editForm.get('receiverId').value)
             .subscribe(
               (subRes: HttpResponse<IUserProfile>) => (this.receivers = [subRes.body].concat(res.body)),
               (subRes: HttpErrorResponse) => this.onError(subRes.message)
@@ -64,11 +64,11 @@ export class CommentXProfileUpdateComponent implements OnInit {
     );
     this.userProfileService.query({ filter: 'commentxprofile-is-null' }).subscribe(
       (res: HttpResponse<IUserProfile[]>) => {
-        if (!this.editForm.get('poster').value || !this.editForm.get('poster').value.id) {
+        if (!this.editForm.get('posterId').value) {
           this.posters = res.body;
         } else {
           this.userProfileService
-            .find(this.editForm.get('poster').value.id)
+            .find(this.editForm.get('posterId').value)
             .subscribe(
               (subRes: HttpResponse<IUserProfile>) => (this.posters = [subRes.body].concat(res.body)),
               (subRes: HttpErrorResponse) => this.onError(subRes.message)
@@ -79,11 +79,11 @@ export class CommentXProfileUpdateComponent implements OnInit {
     );
     this.commentService.query({ filter: 'commentxprofile-is-null' }).subscribe(
       (res: HttpResponse<IComment[]>) => {
-        if (!this.editForm.get('comment').value || !this.editForm.get('comment').value.id) {
+        if (!this.editForm.get('commentId').value) {
           this.comments = res.body;
         } else {
           this.commentService
-            .find(this.editForm.get('comment').value.id)
+            .find(this.editForm.get('commentId').value)
             .subscribe(
               (subRes: HttpResponse<IComment>) => (this.comments = [subRes.body].concat(res.body)),
               (subRes: HttpErrorResponse) => this.onError(subRes.message)
@@ -97,9 +97,9 @@ export class CommentXProfileUpdateComponent implements OnInit {
   updateForm(commentXProfile: ICommentXProfile) {
     this.editForm.patchValue({
       id: commentXProfile.id,
-      receiver: commentXProfile.receiver,
-      poster: commentXProfile.poster,
-      comment: commentXProfile.comment
+      receiverId: commentXProfile.receiverId,
+      posterId: commentXProfile.posterId,
+      commentId: commentXProfile.commentId
     });
   }
 
@@ -121,9 +121,9 @@ export class CommentXProfileUpdateComponent implements OnInit {
     return {
       ...new CommentXProfile(),
       id: this.editForm.get(['id']).value,
-      receiver: this.editForm.get(['receiver']).value,
-      poster: this.editForm.get(['poster']).value,
-      comment: this.editForm.get(['comment']).value
+      receiverId: this.editForm.get(['receiverId']).value,
+      posterId: this.editForm.get(['posterId']).value,
+      commentId: this.editForm.get(['commentId']).value
     };
   }
 

@@ -1,0 +1,32 @@
+{
+    "name": "FollowerXFollowed",
+    "fields": [],
+    "relationships": [
+        {
+            "relationshipType": "one-to-one",
+            "otherEntityName": "userProfile",
+            "otherEntityRelationshipName": "followerXFollowed",
+            "relationshipName": "follower",
+            "otherEntityField": "id",
+            "ownerSide": true
+        },
+        {
+            "relationshipType": "one-to-one",
+            "otherEntityName": "userProfile",
+            "otherEntityRelationshipName": "followerXFollowed",
+            "relationshipName": "followed",
+            "otherEntityField": "id",
+            "ownerSide": true
+        }
+    ],
+    "changelogDate": "20191220215841",
+    "entityTableName": "follower_x_followed",
+    "dto": "mapstruct",
+    "pagination": "no",
+    "service": "serviceClass",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "readOnly": false,
+    "clientRootFolder": "",
+    "applications": "*"
+}

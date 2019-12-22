@@ -13,10 +13,9 @@ import java.util.Optional;
 @SuppressWarnings("unused")
 @Repository
 public interface UserProfileRepository extends JpaRepository<UserProfile, Long> {
-    String PROFILE_BY_USER_LOGIN = "profileByUserLogin";
-
-    Optional<UserProfile> findByUser(User user);
+    String PROFILE_BY_USER_LOGIN = "ProfileByUserLogin";
 
     void deleteAllByUser(User user);
 
+    Optional<UserProfile> findByUser(User user);
 }

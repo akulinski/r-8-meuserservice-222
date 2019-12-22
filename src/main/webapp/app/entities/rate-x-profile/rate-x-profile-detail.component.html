@@ -7,20 +7,20 @@
             <dl class="row-md jh-entity-details">
                 <dt><span>Rated</span></dt>
                 <dd>
-                    <div *ngIf="rateXProfile.rated">
-                        <a [routerLink]="['/user-profile', rateXProfile.rated?.id, 'view']">{{rateXProfile.rated?.id}}</a>
+                    <div *ngIf="rateXProfile.ratedId">
+                        <a [routerLink]="['/user-profile', rateXProfile.ratedId, 'view']">{{rateXProfile.ratedId}}</a>
                     </div>
                 </dd>
                 <dt><span>Rater</span></dt>
                 <dd>
-                    <div *ngIf="rateXProfile.rater">
-                        <a [routerLink]="['/user-profile', rateXProfile.rater?.id, 'view']">{{rateXProfile.rater?.id}}</a>
+                    <div *ngIf="rateXProfile.raterId">
+                        <a [routerLink]="['/user-profile', rateXProfile.raterId, 'view']">{{rateXProfile.raterId}}</a>
                     </div>
                 </dd>
                 <dt><span>Rate</span></dt>
                 <dd>
-                    <div *ngIf="rateXProfile.rate">
-                        <a [routerLink]="['/rate', rateXProfile.rate?.id, 'view']">{{rateXProfile.rate?.id}}</a>
+                    <div *ngIf="rateXProfile.rateId">
+                        <a [routerLink]="['/rate', rateXProfile.rateId, 'view']">{{rateXProfile.rateId}}</a>
                     </div>
                 </dd>
             </dl>

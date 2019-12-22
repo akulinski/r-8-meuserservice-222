@@ -46,6 +46,7 @@ public class CacheConfiguration {
         return cm -> {
             createCache(cm, com.akulinski.r8meservice.repository.UserRepository.USERS_BY_LOGIN_CACHE, jcacheConfiguration);
             createCache(cm, com.akulinski.r8meservice.repository.UserRepository.USERS_BY_EMAIL_CACHE, jcacheConfiguration);
+            createCache(cm, com.akulinski.r8meservice.repository.UserProfileRepository.PROFILE_BY_USER_LOGIN, jcacheConfiguration);
             createCache(cm, com.akulinski.r8meservice.domain.User.class.getName(), jcacheConfiguration);
             createCache(cm, com.akulinski.r8meservice.domain.Authority.class.getName(), jcacheConfiguration);
             createCache(cm, com.akulinski.r8meservice.domain.User.class.getName() + ".authorities", jcacheConfiguration);

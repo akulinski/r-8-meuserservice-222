@@ -23,7 +23,7 @@ export class UserProfileUpdateComponent implements OnInit {
   editForm = this.fb.group({
     id: [],
     currentRating: [],
-    user: []
+    userId: []
   });
 
   constructor(
@@ -48,7 +48,7 @@ export class UserProfileUpdateComponent implements OnInit {
     this.editForm.patchValue({
       id: userProfile.id,
       currentRating: userProfile.currentRating,
-      user: userProfile.user
+      userId: userProfile.userId
     });
   }
 
@@ -71,7 +71,7 @@ export class UserProfileUpdateComponent implements OnInit {
       ...new UserProfile(),
       id: this.editForm.get(['id']).value,
       currentRating: this.editForm.get(['currentRating']).value,
-      user: this.editForm.get(['user']).value
+      userId: this.editForm.get(['userId']).value
     };
   }
 

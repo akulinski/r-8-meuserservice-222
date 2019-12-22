@@ -44,18 +44,18 @@
             <tr *ngFor="let rateXProfile of rateXProfiles ;trackBy: trackId">
                 <td><a [routerLink]="['/rate-x-profile', rateXProfile.id, 'view' ]">{{rateXProfile.id}}</a></td>
                 <td>
-                    <div *ngIf="rateXProfile.rated">
-                        <a [routerLink]="['/user-profile', rateXProfile.rated?.id, 'view' ]" >{{rateXProfile.rated?.id}}</a>
+                    <div *ngIf="rateXProfile.ratedId">
+                        <a [routerLink]="['/user-profile', rateXProfile.ratedId , 'view' ]" >{{rateXProfile.ratedId}}</a>
                     </div>
                 </td>
                 <td>
-                    <div *ngIf="rateXProfile.rater">
-                        <a [routerLink]="['/user-profile', rateXProfile.rater?.id, 'view' ]" >{{rateXProfile.rater?.id}}</a>
+                    <div *ngIf="rateXProfile.raterId">
+                        <a [routerLink]="['/user-profile', rateXProfile.raterId , 'view' ]" >{{rateXProfile.raterId}}</a>
                     </div>
                 </td>
                 <td>
-                    <div *ngIf="rateXProfile.rate">
-                        <a [routerLink]="['/rate', rateXProfile.rate?.id, 'view' ]" >{{rateXProfile.rate?.id}}</a>
+                    <div *ngIf="rateXProfile.rateId">
+                        <a [routerLink]="['/rate', rateXProfile.rateId , 'view' ]" >{{rateXProfile.rateId}}</a>
                     </div>
                 </td>
                 <td class="text-right">

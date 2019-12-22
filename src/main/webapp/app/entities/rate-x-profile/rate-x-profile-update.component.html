@@ -12,23 +12,23 @@
 
                 <div class="form-group">
                     <label class="form-control-label" for="field_rated">Rated</label>
-                    <select class="form-control" id="field_rated" name="rated" formControlName="rated">
+                    <select class="form-control" id="field_rated" name="rated" formControlName="ratedId">
                         <option [ngValue]="null"></option>
-                        <option [ngValue]="userProfileOption.id === editForm.get('rated').value?.id ? editForm.get('rated').value : userProfileOption" *ngFor="let userProfileOption of rateds; trackBy: trackUserProfileById">{{userProfileOption.id}}</option>
+                        <option [ngValue]="userProfileOption.id" *ngFor="let userProfileOption of rateds; trackBy: trackUserProfileById">{{userProfileOption.id}}</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label class="form-control-label" for="field_rater">Rater</label>
-                    <select class="form-control" id="field_rater" name="rater" formControlName="rater">
+                    <select class="form-control" id="field_rater" name="rater" formControlName="raterId">
                         <option [ngValue]="null"></option>
-                        <option [ngValue]="userProfileOption.id === editForm.get('rater').value?.id ? editForm.get('rater').value : userProfileOption" *ngFor="let userProfileOption of raters; trackBy: trackUserProfileById">{{userProfileOption.id}}</option>
+                        <option [ngValue]="userProfileOption.id" *ngFor="let userProfileOption of raters; trackBy: trackUserProfileById">{{userProfileOption.id}}</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label class="form-control-label" for="field_rate">Rate</label>
-                    <select class="form-control" id="field_rate" name="rate" formControlName="rate">
+                    <select class="form-control" id="field_rate" name="rate" formControlName="rateId">
                         <option [ngValue]="null"></option>
-                        <option [ngValue]="rateOption.id === editForm.get('rate').value?.id ? editForm.get('rate').value : rateOption" *ngFor="let rateOption of rates; trackBy: trackRateById">{{rateOption.id}}</option>
+                        <option [ngValue]="rateOption.id" *ngFor="let rateOption of rates; trackBy: trackRateById">{{rateOption.id}}</option>
                     </select>
                 </div>
             </div>

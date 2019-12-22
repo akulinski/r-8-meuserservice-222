@@ -28,9 +28,9 @@ export class RateXProfileUpdateComponent implements OnInit {
 
   editForm = this.fb.group({
     id: [],
-    rated: [],
-    rater: [],
-    rate: []
+    ratedId: [],
+    raterId: [],
+    rateId: []
   });
 
   constructor(
@@ -49,11 +49,11 @@ export class RateXProfileUpdateComponent implements OnInit {
     });
     this.userProfileService.query({ filter: 'ratexprofile-is-null' }).subscribe(
       (res: HttpResponse<IUserProfile[]>) => {
-        if (!this.editForm.get('rated').value || !this.editForm.get('rated').value.id) {
+        if (!this.editForm.get('ratedId').value) {
           this.rateds = res.body;
         } else {
           this.userProfileService
-            .find(this.editForm.get('rated').value.id)
+            .find(this.editForm.get('ratedId').value)
             .subscribe(
               (subRes: HttpResponse<IUserProfile>) => (this.rateds = [subRes.body].concat(res.body)),
               (subRes: HttpErrorResponse) => this.onError(subRes.message)
@@ -64,11 +64,11 @@ export class RateXProfileUpdateComponent implements OnInit {
     );
     this.userProfileService.query({ filter: 'ratexprofile-is-null' }).subscribe(
       (res: HttpResponse<IUserProfile[]>) => {
-        if (!this.editForm.get('rater').value || !this.editForm.get('rater').value.id) {
+        if (!this.editForm.get('raterId').value) {
           this.raters = res.body;
         } else {
           this.userProfileService
-            .find(this.editForm.get('rater').value.id)
+            .find(this.editForm.get('raterId').value)
             .subscribe(
               (subRes: HttpResponse<IUserProfile>) => (this.raters = [subRes.body].concat(res.body)),
               (subRes: HttpErrorResponse) => this.onError(subRes.message)
@@ -79,11 +79,11 @@ export class RateXProfileUpdateComponent implements OnInit {
     );
     this.rateService.query({ filter: 'ratexprofile-is-null' }).subscribe(
       (res: HttpResponse<IRate[]>) => {
-        if (!this.editForm.get('rate').value || !this.editForm.get('rate').value.id) {
+        if (!this.editForm.get('rateId').value) {
           this.rates = res.body;
         } else {
           this.rateService
-            .find(this.editForm.get('rate').value.id)
+            .find(this.editForm.get('rateId').value)
             .subscribe(
               (subRes: HttpResponse<IRate>) => (this.rates = [subRes.body].concat(res.body)),
               (subRes: HttpErrorResponse) => this.onError(subRes.message)
@@ -97,9 +97,9 @@ export class RateXProfileUpdateComponent implements OnInit {
   updateForm(rateXProfile: IRateXProfile) {
     this.editForm.patchValue({
       id: rateXProfile.id,
-      rated: rateXProfile.rated,
-      rater: rateXProfile.rater,
-      rate: rateXProfile.rate
+      ratedId: rateXProfile.ratedId,
+      raterId: rateXProfile.raterId,
+      rateId: rateXProfile.rateId
     });
   }
 
@@ -121,9 +121,9 @@ export class RateXProfileUpdateComponent implements OnInit {
     return {
       ...new RateXProfile(),
       id: this.editForm.get(['id']).value,
-      rated: this.editForm.get(['rated']).value,
-      rater: this.editForm.get(['rater']).value,
-      rate: this.editForm.get(['rate']).value
+      ratedId: this.editForm.get(['ratedId']).value,
+      raterId: this.editForm.get(['raterId']).value,
+      rateId: this.editForm.get(['rateId']).value
     };
   }
 

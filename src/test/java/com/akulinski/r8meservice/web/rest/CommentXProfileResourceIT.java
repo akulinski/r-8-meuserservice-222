@@ -5,6 +5,9 @@ import com.akulinski.r8meservice.R8Meuserservice2App;
 import com.akulinski.r8meservice.domain.CommentXProfile;
 import com.akulinski.r8meservice.repository.CommentXProfileRepository;
 import com.akulinski.r8meservice.repository.search.CommentXProfileSearchRepository;
+import com.akulinski.r8meservice.service.CommentXProfileService;
+import com.akulinski.r8meservice.service.dto.CommentXProfileDTO;
+import com.akulinski.r8meservice.service.mapper.CommentXProfileMapper;
 import com.akulinski.r8meservice.web.rest.errors.ExceptionTranslator;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -43,6 +46,12 @@ public class CommentXProfileResourceIT {
     @Autowired
     private CommentXProfileRepository commentXProfileRepository;
 
+    @Autowired
+    private CommentXProfileMapper commentXProfileMapper;
+
+    @Autowired
+    private CommentXProfileService commentXProfileService;
+
     /**
      * This repository is mocked in the com.akulinski.r8meservice.repository.search test package.
      *
@@ -73,7 +82,7 @@ public class CommentXProfileResourceIT {
     @BeforeEach
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final CommentXProfileResource commentXProfileResource = new CommentXProfileResource(commentXProfileRepository, mockCommentXProfileSearchRepository);
+        final CommentXProfileResource commentXProfileResource = new CommentXProfileResource(commentXProfileService);
         this.restCommentXProfileMockMvc = MockMvcBuilders.standaloneSetup(commentXProfileResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -114,9 +123,10 @@ public class CommentXProfileResourceIT {
         int databaseSizeBeforeCreate = commentXProfileRepository.findAll().size();
 
         // Create the CommentXProfile
+        CommentXProfileDTO commentXProfileDTO = commentXProfileMapper.toDto(commentXProfile);
         restCommentXProfileMockMvc.perform(post("/api/comment-x-profiles")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(commentXProfile)))
+            .content(TestUtil.convertObjectToJsonBytes(commentXProfileDTO)))
             .andExpect(status().isCreated());
 
         // Validate the CommentXProfile in the database
@@ -135,11 +145,12 @@ public class CommentXProfileResourceIT {
 
         // Create the CommentXProfile with an existing ID
         commentXProfile.setId(1L);
+        CommentXProfileDTO commentXProfileDTO = commentXProfileMapper.toDto(commentXProfile);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restCommentXProfileMockMvc.perform(post("/api/comment-x-profiles")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(commentXProfile)))
+            .content(TestUtil.convertObjectToJsonBytes(commentXProfileDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the CommentXProfile in the database
@@ -197,10 +208,11 @@ public class CommentXProfileResourceIT {
         CommentXProfile updatedCommentXProfile = commentXProfileRepository.findById(commentXProfile.getId()).get();
         // Disconnect from session so that the updates on updatedCommentXProfile are not directly saved in db
         em.detach(updatedCommentXProfile);
+        CommentXProfileDTO commentXProfileDTO = commentXProfileMapper.toDto(updatedCommentXProfile);
 
         restCommentXProfileMockMvc.perform(put("/api/comment-x-profiles")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(updatedCommentXProfile)))
+            .content(TestUtil.convertObjectToJsonBytes(commentXProfileDTO)))
             .andExpect(status().isOk());
 
         // Validate the CommentXProfile in the database
@@ -218,11 +230,12 @@ public class CommentXProfileResourceIT {
         int databaseSizeBeforeUpdate = commentXProfileRepository.findAll().size();
 
         // Create the CommentXProfile
+        CommentXProfileDTO commentXProfileDTO = commentXProfileMapper.toDto(commentXProfile);
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restCommentXProfileMockMvc.perform(put("/api/comment-x-profiles")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(commentXProfile)))
+            .content(TestUtil.convertObjectToJsonBytes(commentXProfileDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the CommentXProfile in the database

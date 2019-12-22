@@ -7,20 +7,20 @@
             <dl class="row-md jh-entity-details">
                 <dt><span>Receiver</span></dt>
                 <dd>
-                    <div *ngIf="commentXProfile.receiver">
-                        <a [routerLink]="['/user-profile', commentXProfile.receiver?.id, 'view']">{{commentXProfile.receiver?.id}}</a>
+                    <div *ngIf="commentXProfile.receiverId">
+                        <a [routerLink]="['/user-profile', commentXProfile.receiverId, 'view']">{{commentXProfile.receiverId}}</a>
                     </div>
                 </dd>
                 <dt><span>Poster</span></dt>
                 <dd>
-                    <div *ngIf="commentXProfile.poster">
-                        <a [routerLink]="['/user-profile', commentXProfile.poster?.id, 'view']">{{commentXProfile.poster?.id}}</a>
+                    <div *ngIf="commentXProfile.posterId">
+                        <a [routerLink]="['/user-profile', commentXProfile.posterId, 'view']">{{commentXProfile.posterId}}</a>
                     </div>
                 </dd>
                 <dt><span>Comment</span></dt>
                 <dd>
-                    <div *ngIf="commentXProfile.comment">
-                        <a [routerLink]="['/comment', commentXProfile.comment?.id, 'view']">{{commentXProfile.comment?.id}}</a>
+                    <div *ngIf="commentXProfile.commentId">
+                        <a [routerLink]="['/comment', commentXProfile.commentId, 'view']">{{commentXProfile.commentId}}</a>
                     </div>
                 </dd>
             </dl>

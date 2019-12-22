@@ -1,0 +1,32 @@
+{
+    "name": "Comment",
+    "fields": [
+        {
+            "fieldName": "comment",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "timeStamp",
+            "fieldType": "Instant"
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipType": "one-to-one",
+            "otherEntityName": "commentXProfile",
+            "otherEntityRelationshipName": "comment",
+            "relationshipName": "commentXProfile",
+            "ownerSide": false
+        }
+    ],
+    "changelogDate": "20191220215838",
+    "entityTableName": "comment",
+    "dto": "mapstruct",
+    "pagination": "no",
+    "service": "serviceClass",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "readOnly": false,
+    "clientRootFolder": "",
+    "applications": "*"
+}
