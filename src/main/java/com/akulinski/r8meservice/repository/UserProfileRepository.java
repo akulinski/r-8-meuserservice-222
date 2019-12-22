@@ -4,7 +4,11 @@ import com.akulinski.r8meservice.domain.UserProfile;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.QueryHint;
 import java.util.Optional;
+import java.util.stream.Stream;
+
+import static org.hibernate.jpa.QueryHints.HINT_FETCH_SIZE;
 
 
 /**
@@ -18,4 +22,10 @@ public interface UserProfileRepository extends JpaRepository<UserProfile, Long> 
     void deleteAllByUser(User user);
 
     Optional<UserProfile> findByUser(User user);
+
+    Optional<UserProfile> findByUser_Login(String login);
+
+    @QueryHints(value = @QueryHint(name = HINT_FETCH_SIZE, value = "" + 50))
+    @Query("select up from UserProfile up")
+    Stream<UserProfile> findAllStream();
 }

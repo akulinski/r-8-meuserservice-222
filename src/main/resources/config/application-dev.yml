@@ -154,13 +154,5 @@ jhipster:
   audit-events:
     retention-period: 30 # Number of days before audit events are deleted.
 
-# ===================================================================
-# Application specific properties
-# Add your own application properties here, see the ApplicationProperties class
-# to have type-safe configuration, like in the JHipsterProperties above
-#
-# More documentation is available at:
-# https://www.jhipster.tech/common-application-properties/
-# ===================================================================
-
-# application:
+scheduler:
+  profilecalc: 1000

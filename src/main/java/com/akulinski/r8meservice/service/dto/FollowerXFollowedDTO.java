@@ -1,4 +1,6 @@
 package com.akulinski.r8meservice.service.dto;
+import com.akulinski.r8meservice.security.SecurityUtils;
+
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -9,10 +11,13 @@ public class FollowerXFollowedDTO implements Serializable {
 
     private Long id;
 
-
     private Long followerId;
 
     private Long followedId;
+
+    private String followerUsername;
+
+    private String followedUsername;
 
     public Long getId() {
         return id;
@@ -66,5 +71,21 @@ public class FollowerXFollowedDTO implements Serializable {
             ", follower=" + getFollowerId() +
             ", followed=" + getFollowedId() +
             "}";
+    }
+
+    public String getFollowerUsername() {
+        return followerUsername;
+    }
+
+    public void setFollowerUsername(String followerUsername) {
+        this.followerUsername = followerUsername;
+    }
+
+    public String getFollowedUsername() {
+        return followedUsername;
+    }
+
+    public void setFollowedUsername(String followedUsername) {
+        this.followedUsername = followedUsername;
     }
 }

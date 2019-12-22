@@ -1,5 +1,6 @@
 package com.akulinski.r8meservice.web.rest;
 
+import com.akulinski.r8meservice.security.AuthoritiesConstants;
 import com.akulinski.r8meservice.service.CommentService;
 import com.akulinski.r8meservice.web.rest.errors.BadRequestAlertException;
 import com.akulinski.r8meservice.service.dto.CommentDTO;
@@ -10,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -88,8 +90,28 @@ public class CommentResource {
      * @param filter the filter of the request.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of comments in body.
      */
-    @GetMapping("/comments")
+    @PreAuthorize("hasRole(\"" + AuthoritiesConstants.ADMIN + "\")")
+    @GetMapping("/comments/all")
     public List<CommentDTO> getAllComments(@RequestParam(required = false) String filter) {
+        if ("commentxprofile-is-null".equals(filter)) {
+            log.debug("REST request to get all Comments where commentXProfile is null");
+            return commentService.findAllWhereCommentXProfileIsNull();
+        }
+        log.debug("REST request to get all Comments");
+        return commentService.findAll();
+    }
+
+
+    /**
+     * {@code GET  /comments} : get all the comments.
+     *
+
+     * @param filter the filter of the request.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of comments in body.
+     */
+    @PreAuthorize("hasRole(\"" + AuthoritiesConstants.ADMIN + "\")")
+    @GetMapping("/comments")
+    public List<CommentDTO> getCommentsForUser(@RequestParam(required = false) String filter) {
         if ("commentxprofile-is-null".equals(filter)) {
             log.debug("REST request to get all Comments where commentXProfile is null");
             return commentService.findAllWhereCommentXProfileIsNull();

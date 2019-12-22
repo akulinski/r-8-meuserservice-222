@@ -5,6 +5,7 @@ import com.akulinski.r8meservice.domain.User;
 import com.akulinski.r8meservice.repository.UserRepository;
 import com.akulinski.r8meservice.repository.search.UserSearchRepository;
 import com.akulinski.r8meservice.security.AuthoritiesConstants;
+import com.akulinski.r8meservice.security.SecurityUtils;
 import com.akulinski.r8meservice.service.MailService;
 import com.akulinski.r8meservice.service.UserService;
 import com.akulinski.r8meservice.service.dto.UserDTO;
@@ -12,6 +13,7 @@ import com.akulinski.r8meservice.web.rest.errors.BadRequestAlertException;
 import com.akulinski.r8meservice.web.rest.errors.EmailAlreadyUsedException;
 import com.akulinski.r8meservice.web.rest.errors.LoginAlreadyUsedException;
 
+import com.akulinski.r8meservice.web.rest.vm.UserProfileVM;
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
@@ -207,5 +209,10 @@ public class UserResource {
         return StreamSupport
             .stream(userSearchRepository.search(queryStringQuery(query)).spliterator(), false)
             .collect(Collectors.toList());
+    }
+
+    @GetMapping("/user")
+    public ResponseEntity<UserProfileVM> getCurrentUser(){
+        return ResponseEntity.ok(userService.getUserProfileVM());
     }
 }

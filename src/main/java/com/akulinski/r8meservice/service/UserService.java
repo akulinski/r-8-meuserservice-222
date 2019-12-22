@@ -4,15 +4,15 @@ import com.akulinski.r8meservice.config.Constants;
 import com.akulinski.r8meservice.domain.Authority;
 import com.akulinski.r8meservice.domain.User;
 import com.akulinski.r8meservice.domain.UserProfile;
-import com.akulinski.r8meservice.repository.AuthorityRepository;
-import com.akulinski.r8meservice.repository.UserProfileRepository;
-import com.akulinski.r8meservice.repository.UserRepository;
+import com.akulinski.r8meservice.repository.*;
 import com.akulinski.r8meservice.repository.search.UserProfileSearchRepository;
 import com.akulinski.r8meservice.repository.search.UserSearchRepository;
 import com.akulinski.r8meservice.security.AuthoritiesConstants;
 import com.akulinski.r8meservice.security.SecurityUtils;
+import com.akulinski.r8meservice.service.dto.SignUpAndroidDTO;
 import com.akulinski.r8meservice.service.dto.UserDTO;
 import com.akulinski.r8meservice.service.util.RandomUtil;
+import com.akulinski.r8meservice.web.rest.vm.UserProfileVM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.CacheManager;
@@ -51,7 +51,13 @@ public class UserService {
 
     private final UserProfileSearchRepository userProfileSearchRepository;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserSearchRepository userSearchRepository, AuthorityRepository authorityRepository, CacheManager cacheManager, UserProfileRepository userProfileRepository, UserProfileSearchRepository userProfileSearchRepository) {
+    private final RateXProfileRepository rateXProfileRepository;
+
+    private final CommentXProfileRepository commentXProfileRepository;
+
+    private final FollowerXFollowedRepository followerXFollowedRepository;
+
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserSearchRepository userSearchRepository, AuthorityRepository authorityRepository, CacheManager cacheManager, UserProfileRepository userProfileRepository, UserProfileSearchRepository userProfileSearchRepository, RateXProfileRepository rateXProfileRepository, CommentXProfileRepository commentXProfileRepository, FollowerXFollowedRepository followerXFollowedRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.userSearchRepository = userSearchRepository;
@@ -59,6 +65,9 @@ public class UserService {
         this.cacheManager = cacheManager;
         this.userProfileRepository = userProfileRepository;
         this.userProfileSearchRepository = userProfileSearchRepository;
+        this.rateXProfileRepository = rateXProfileRepository;
+        this.commentXProfileRepository = commentXProfileRepository;
+        this.followerXFollowedRepository = followerXFollowedRepository;
     }
 
     public Optional<User> activateRegistration(String key) {
@@ -120,6 +129,28 @@ public class UserService {
         return newUser;
     }
 
+    public User registerUser(SignUpAndroidDTO signUpAndroidDTO, String password) {
+        userRepository.findOneByLogin(signUpAndroidDTO.getUsername().toLowerCase()).ifPresent(existingUser -> {
+            boolean removed = removeNonActivatedUser(existingUser);
+            if (!removed) {
+                throw new UsernameAlreadyUsedException();
+            }
+        });
+        userRepository.findOneByEmailIgnoreCase(signUpAndroidDTO.getEmail()).ifPresent(existingUser -> {
+            boolean removed = removeNonActivatedUser(existingUser);
+            if (!removed) {
+                throw new EmailAlreadyUsedException();
+            }
+        });
+
+        User newUser = getUser(signUpAndroidDTO, password);
+
+        createProfile(newUser);
+
+        log.debug("Created Information for User: {}", newUser);
+        return newUser;
+    }
+
     private void createProfile(User newUser) {
         UserProfile userProfile = new UserProfile();
         userProfile.setUser(newUser);
@@ -128,6 +159,29 @@ public class UserService {
         userProfileSearchRepository.save(userProfile);
 
         cacheManager.getCache(UserProfileRepository.PROFILE_BY_USER_LOGIN).put(newUser.getLogin(), userProfile);
+    }
+
+    private User getUser(SignUpAndroidDTO signUpAndroidDTO, String password) {
+        User newUser = new User();
+        String encryptedPassword = passwordEncoder.encode(password);
+        newUser.setLogin(signUpAndroidDTO.getUsername().toLowerCase());
+        // new user gets initially a generated password
+        newUser.setPassword(encryptedPassword);
+        newUser.setFirstName(signUpAndroidDTO.getUsername());
+        newUser.setLastName(signUpAndroidDTO.getUsername());
+        newUser.setEmail(signUpAndroidDTO.getEmail().toLowerCase());
+        newUser.setLangKey("en");
+        // new user is not active
+        newUser.setActivated(false);
+        // new user gets registration key
+        newUser.setActivationKey(RandomUtil.generateActivationKey());
+        Set<Authority> authorities = new HashSet<>();
+        authorityRepository.findById(AuthoritiesConstants.USER).ifPresent(authorities::add);
+        newUser.setAuthorities(authorities);
+        userRepository.save(newUser);
+        userSearchRepository.save(newUser);
+        this.clearUserCaches(newUser);
+        return newUser;
     }
 
     private User getUser(UserDTO userDTO, String password) {
@@ -306,6 +360,14 @@ public class UserService {
                 this.userProfileSearchRepository.deleteAllByUser(user);
                 this.cacheManager.getCache(UserProfileRepository.PROFILE_BY_USER_LOGIN).clear();
             });
+    }
+
+    public UserProfileVM  getUserProfileVM(){
+        final var currentLogin = SecurityUtils.getCurrentUserLogin().orElseThrow(() -> new IllegalStateException("No login found"));
+        final var currentUser = userRepository.findOneByLogin(currentLogin).orElseThrow(() -> new IllegalStateException(String.format("User not found with login: %s", currentLogin)));
+        final var profile = userProfileRepository.findByUser(currentUser).orElseThrow(() -> new IllegalStateException(String.format("No profile is connected to user: %s", currentLogin)));;
+
+        return new UserProfileVM(currentLogin, profile.getCurrentRating(), currentUser.getImageUrl(),followerXFollowedRepository.findAllByFollowed(profile).size(), commentXProfileRepository.findAllByReceiver(profile).size());
     }
 
     /**

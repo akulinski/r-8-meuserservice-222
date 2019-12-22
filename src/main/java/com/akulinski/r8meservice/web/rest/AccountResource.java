@@ -7,6 +7,7 @@ import com.akulinski.r8meservice.security.SecurityUtils;
 import com.akulinski.r8meservice.service.MailService;
 import com.akulinski.r8meservice.service.UserService;
 import com.akulinski.r8meservice.service.dto.PasswordChangeDTO;
+import com.akulinski.r8meservice.service.dto.SignUpAndroidDTO;
 import com.akulinski.r8meservice.service.dto.UserDTO;
 import com.akulinski.r8meservice.web.rest.errors.*;
 import com.akulinski.r8meservice.web.rest.vm.KeyAndPasswordVM;
@@ -65,6 +66,26 @@ public class AccountResource {
             throw new InvalidPasswordException();
         }
         User user = userService.registerUser(managedUserVM, managedUserVM.getPassword());
+        mailService.sendActivationEmail(user);
+    }
+
+
+    /**
+     * {@code POST  /user} : register the user.
+     * This endpoint is created to assure backwards compability with version 1.0 of api
+     *
+     * @throws InvalidPasswordException {@code 400 (Bad Request)} if the password is incorrect.
+     * @throws EmailAlreadyUsedException {@code 400 (Bad Request)} if the email is already used.
+     * @throws LoginAlreadyUsedException {@code 400 (Bad Request)} if the login is already used.
+     */
+    @PostMapping("/user")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void createUser(@Valid @RequestBody SignUpAndroidDTO signUpAndroidDTO) {
+        if (!checkPasswordLength(signUpAndroidDTO.getPassword())) {
+            throw new InvalidPasswordException();
+        }
+
+        User user = userService.registerUser(signUpAndroidDTO, signUpAndroidDTO.getPassword());
         mailService.sendActivationEmail(user);
     }
 

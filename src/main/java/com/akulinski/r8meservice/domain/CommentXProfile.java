@@ -25,15 +25,15 @@ public class CommentXProfile implements Serializable {
     private Long id;
 
     @OneToOne
-    @JoinColumn(unique = true)
+    @JoinColumn
     private UserProfile receiver;
 
     @OneToOne
-    @JoinColumn(unique = true)
+    @JoinColumn
     private UserProfile poster;
 
     @OneToOne
-    @JoinColumn(unique = true)
+    @JoinColumn
     private Comment comment;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove

@@ -25,15 +25,15 @@ public class RateXProfile implements Serializable {
     private Long id;
 
     @OneToOne
-    @JoinColumn(unique = true)
+    @JoinColumn
     private UserProfile rated;
 
     @OneToOne
-    @JoinColumn(unique = true)
+    @JoinColumn
     private UserProfile rater;
 
     @OneToOne
-    @JoinColumn(unique = true)
+    @JoinColumn
     private Rate rate;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove

@@ -14,6 +14,7 @@ public class CommentDTO implements Serializable {
 
     private Instant timeStamp;
 
+    private String receiver;
 
     public Long getId() {
         return id;
@@ -53,6 +54,14 @@ public class CommentDTO implements Serializable {
             return false;
         }
         return Objects.equals(getId(), commentDTO.getId());
+    }
+
+    public String getReceiver() {
+        return receiver;
+    }
+
+    public void setReceiver(String receiver) {
+        this.receiver = receiver;
     }
 
     @Override
