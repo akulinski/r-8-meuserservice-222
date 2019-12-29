@@ -34,7 +34,7 @@ spec:
               done
       containers:
         - name: r8meuserservice2-app
-          image: gcr.io/r8me-262821/r8meuserservice2:0.0.2-SNAPSHOT
+          image: gcr.io/r8me-262821/r8meuserservice2:0.0.3-SNAPSHOT
           env:
             - name: JHIPSTER_CACHE_REDIS_SERVER
               value: redis://r8meuserservice2-redis:6379
