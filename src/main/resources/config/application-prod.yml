@@ -38,6 +38,12 @@ spring:
       enabled: false
     livereload:
       enabled: false
+
+  cloud:
+    gcp:
+      project-id: ${PROJECT_ID}
+      credentials:
+        encoded-key: ${ENCODED_KEY}
   kafka:
     consumer:
       bootstrap-servers: localhost:9092

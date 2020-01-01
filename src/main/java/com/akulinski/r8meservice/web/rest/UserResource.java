@@ -12,6 +12,7 @@ import com.akulinski.r8meservice.repository.search.UserSearchRepository;
 import com.akulinski.r8meservice.security.AuthoritiesConstants;
 import com.akulinski.r8meservice.security.SecurityUtils;
 import com.akulinski.r8meservice.service.MailService;
+import com.akulinski.r8meservice.service.PhotoStorageService;
 import com.akulinski.r8meservice.service.UserService;
 import com.akulinski.r8meservice.service.dto.UserDTO;
 import com.akulinski.r8meservice.web.rest.errors.BadRequestAlertException;
@@ -20,9 +21,11 @@ import com.akulinski.r8meservice.web.rest.errors.LoginAlreadyUsedException;
 import com.akulinski.r8meservice.web.rest.vm.UserProfileVM;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.netflix.discovery.converters.Auto;
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.QueryStringQueryBuilder;
@@ -39,7 +42,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
@@ -99,8 +104,10 @@ public class UserResource {
 
     private final UserSearchRepository userSearchRepository;
 
+    private final PhotoStorageService photoStorageService;
+
     public UserResource(UserService userService, UserRepository userRepository, UserProfileRepository userProfileRepository,
-                        FollowerXFollowedRepository followerXFollowedRepository, CommentXProfileRepository commentXProfileRepository, UserProfileSearchRepository userProfileSearchRepository, MailService mailService, UserSearchRepository userSearchRepository) {
+                        FollowerXFollowedRepository followerXFollowedRepository, CommentXProfileRepository commentXProfileRepository, UserProfileSearchRepository userProfileSearchRepository, MailService mailService, UserSearchRepository userSearchRepository, PhotoStorageService photoStorageService) {
 
         this.userService = userService;
         this.userRepository = userRepository;
@@ -110,6 +117,7 @@ public class UserResource {
         this.userProfileSearchRepository = userProfileSearchRepository;
         this.mailService = mailService;
         this.userSearchRepository = userSearchRepository;
+        this.photoStorageService = photoStorageService;
     }
 
     /**
@@ -265,6 +273,19 @@ public class UserResource {
         });
 
         return new UserProfileVM(user.getLogin(), profile.getCurrentRating(), currentUser.getImageUrl(), followerXFollowedRepository.findAllByFollowed(profile).size(), commentXProfileRepository.findAllByReceiver(profile).size());
+    }
+
+    @PostMapping("/user/upload-photo")
+    public ResponseEntity uploadPhoto(@RequestParam("photo") MultipartFile multipartFile) {
+        final var username = SecurityUtils.getCurrentUserLogin().orElseThrow(()->new IllegalStateException("No Username provided"));
+        final var user = userRepository.findOneByLogin(username).orElseThrow(() -> new UsernameNotFoundException(username));
+        final var link = photoStorageService.storeProfilePicture(multipartFile, user);
+
+        if(StringUtils.isNotEmpty(link)) {
+            return ResponseEntity.created(URI.create(link)).build();
+        }else{
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     private UserProfileVM getUserProfileVM() {
