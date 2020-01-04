@@ -4,6 +4,7 @@ import com.akulinski.r8meservice.config.cloud.GCPStorageConfig;
 import com.akulinski.r8meservice.domain.User;
 import com.akulinski.r8meservice.repository.UserRepository;
 import com.akulinski.r8meservice.repository.search.UserSearchRepository;
+import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Bucket;
 import com.google.cloud.storage.Storage;
@@ -20,7 +21,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.function.Function;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -67,9 +71,18 @@ public class GCPPhotoStorageService implements PhotoStorageService {
             log.error(e.getLocalizedMessage());
         }
 
-        return "";
+        throw new IllegalStateException("Photo upload failed ");
     }
 
+    /**
+     * Returns Last avatar for user
+     * Photos on GCloud are saved with timestamp at the end of filename
+     * So to get last photo this function has to parse all the names
+     * to dates and return photo with the youngest name
+     *
+     * @param user
+     * @return
+     */
     @Override
     public String getLinkForUser(User user) {
 
@@ -77,15 +90,45 @@ public class GCPPhotoStorageService implements PhotoStorageService {
 
         final var pattern = Pattern.compile(REGEX);
 
-        final var collect = Lists.newArrayList(list.iterateAll()).stream()
-            .sorted(Comparator.comparing(e -> DateTime.parse(pattern.matcher(e.getName()).group(1), DATE_TIME_FORMATTER)))
+        ArrayList<Blob> blobs = Lists.newArrayList(list.iterateAll());
+
+        final var collect = blobs.stream()
+            .sorted(Comparator.comparing(parsePhotoNameToDate(pattern)))
             .collect(Collectors.toList());
 
-        if (collect.size() > 0) {
-            collect.get(0).getMediaLink();
+        if (collect.isEmpty()) {
+            log.error("No photos found in bucket for user: {}", user.getLogin());
+            throw new IllegalStateException(String.format("No photos found in bucket for user: %s", user.getLogin()));
         }
 
-        return "";
+        return collect.get(collect.size() - 1).getMediaLink();
+    }
+
+
+    private Function<Blob, DateTime> parsePhotoNameToDate(Pattern pattern) {
+        return e -> DateTime.parse(getTimestampFromBlob(pattern, e), DATE_TIME_FORMATTER);
+    }
+
+    private String getTimestampFromBlob(Pattern pattern, Blob e) {
+        Matcher matcher = pattern.matcher(e.getName());
+        matcher.find(); //Have to call this before .group()
+        return matcher.group();
+    }
+
+
+    @Override
+    public String storeQuestionPhoto(User user, String question, MultipartFile file) throws IOException {
+        final String fileName = file.getName();
+
+        final InputStream is = file.getInputStream();
+
+
+        final var blobWriteOption = Bucket.BlobWriteOption.predefinedAcl(Storage.PredefinedAcl.PUBLIC_READ);
+        String folder = user.getLogin()+"/"+question+"/";
+
+        BlobInfo blobInfo = bucket.create(folder + fileName + ".jpg", is, blobWriteOption);
+
+        return blobInfo.getMediaLink();
     }
 
     /**

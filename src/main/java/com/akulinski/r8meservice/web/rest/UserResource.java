@@ -18,6 +18,7 @@ import com.akulinski.r8meservice.service.dto.UserDTO;
 import com.akulinski.r8meservice.web.rest.errors.BadRequestAlertException;
 import com.akulinski.r8meservice.web.rest.errors.EmailAlreadyUsedException;
 import com.akulinski.r8meservice.web.rest.errors.LoginAlreadyUsedException;
+import com.akulinski.r8meservice.web.rest.vm.PhotoVM;
 import com.akulinski.r8meservice.web.rest.vm.UserProfileVM;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -276,7 +277,7 @@ public class UserResource {
     }
 
     @PostMapping("/user/upload-photo")
-    public ResponseEntity uploadPhoto(@RequestParam("photo") MultipartFile multipartFile) {
+    public ResponseEntity<Void> uploadPhoto(@RequestParam("photo") MultipartFile multipartFile) {
         final User user = getUserFromContext();
         final var link = photoStorageService.storeProfilePicture(multipartFile, user);
 
@@ -293,9 +294,9 @@ public class UserResource {
     }
 
     @GetMapping("user/get-avatar")
-    public ResponseEntity getAvatar() {
+    public ResponseEntity<PhotoVM> getAvatar() {
         final User user = getUserFromContext();
-        return ResponseEntity.ok(photoStorageService.getLinkForUser(user));
+        return ResponseEntity.ok(new PhotoVM(photoStorageService.getLinkForUser(user)));
     }
 
     private UserProfileVM getUserProfileVM() {

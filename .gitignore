@@ -146,4 +146,4 @@ Desktop.ini
 ######################
 .eslintcache
 
-dev.env
+*.env
