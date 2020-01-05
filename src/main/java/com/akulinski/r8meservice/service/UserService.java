@@ -320,6 +320,16 @@ public class UserService {
             });
     }
 
+    public void changeEmail(String newEmail){
+        SecurityUtils.getCurrentUserLogin()
+            .flatMap(userRepository::findOneByLogin)
+            .ifPresent(user -> {
+                user.setEmail(newEmail);
+                this.clearUserCaches(user);
+                log.debug("Changed email for User: {}", user);
+            });
+    }
+
     @Transactional(readOnly = true)
     public Page<UserDTO> getAllManagedUsers(Pageable pageable) {
         return userRepository.findAllByLoginNot(pageable, Constants.ANONYMOUS_USER).map(UserDTO::new);
