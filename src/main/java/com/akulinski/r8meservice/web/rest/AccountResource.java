@@ -166,7 +166,7 @@ public class AccountResource {
     }
 
     /**
-     * {@code POST  /account/change-password} : changes the current user's email.
+     * {@code POST  /account/change-email} : changes the current user's email.
      *
      * @param emailChangeDTO new email
      * @throws EmailAlreadyUsedException {@code 400 (Bad Request)} if the email is already used.
