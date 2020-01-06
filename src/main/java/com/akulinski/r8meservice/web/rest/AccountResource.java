@@ -6,6 +6,7 @@ import com.akulinski.r8meservice.repository.UserRepository;
 import com.akulinski.r8meservice.security.SecurityUtils;
 import com.akulinski.r8meservice.service.MailService;
 import com.akulinski.r8meservice.service.UserService;
+import com.akulinski.r8meservice.service.dto.EmailChangeDTO;
 import com.akulinski.r8meservice.service.dto.PasswordChangeDTO;
 import com.akulinski.r8meservice.service.dto.SignUpAndroidDTO;
 import com.akulinski.r8meservice.service.dto.UserDTO;
@@ -162,6 +163,21 @@ public class AccountResource {
             throw new InvalidPasswordException();
         }
         userService.changePassword(passwordChangeDto.getCurrentPassword(), passwordChangeDto.getNewPassword());
+    }
+
+    /**
+     * {@code POST  /account/change-email} : changes the current user's email.
+     *
+     * @param emailChangeDTO new email
+     * @throws EmailAlreadyUsedException {@code 400 (Bad Request)} if the email is already used.
+     */
+    @PostMapping(path = "/account/change-email")
+    public void changeEmail(@RequestBody EmailChangeDTO emailChangeDTO){
+        Optional<User> existingUser = userRepository.findOneByEmailIgnoreCase(emailChangeDTO.getNewEmail());
+        if (existingUser.isPresent()) {
+            throw new EmailAlreadyUsedException();
+        }
+        userService.changeEmail(emailChangeDTO.getNewEmail());
     }
 
     /**
