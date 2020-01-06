@@ -2,9 +2,8 @@ package com.akulinski.r8meservice.web.rest;
 
 import com.akulinski.r8meservice.security.AuthoritiesConstants;
 import com.akulinski.r8meservice.service.CommentService;
-import com.akulinski.r8meservice.web.rest.errors.BadRequestAlertException;
 import com.akulinski.r8meservice.service.dto.CommentDTO;
-
+import com.akulinski.r8meservice.web.rest.errors.BadRequestAlertException;
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
@@ -17,12 +16,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * REST controller for managing {@link com.akulinski.r8meservice.domain.Comment}.

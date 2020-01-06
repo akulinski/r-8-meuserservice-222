@@ -18,7 +18,9 @@ public class CommentDTO implements Serializable, Comparable {
 
     private String receiver;
 
-    private String commenter;
+    private String poster;
+
+    private String imageUrl;
 
     public Long getId() {
         return id;
@@ -52,12 +54,20 @@ public class CommentDTO implements Serializable, Comparable {
         this.receiver = receiver;
     }
 
-    public String getCommenter() {
-        return commenter;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public void setCommenter(String commenter) {
-        this.commenter = commenter;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public String getPoster() {
+        return poster;
+    }
+
+    public void setPoster(String poster) {
+        this.poster = poster;
     }
 
     @Override
@@ -69,23 +79,13 @@ public class CommentDTO implements Serializable, Comparable {
             Objects.equals(getComment(), that.getComment()) &&
             Objects.equals(getTimeStamp(), that.getTimeStamp()) &&
             Objects.equals(getReceiver(), that.getReceiver()) &&
-            Objects.equals(getCommenter(), that.getCommenter());
+            Objects.equals(getPoster(), that.getPoster()) &&
+            Objects.equals(getImageUrl(), that.getImageUrl());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getComment(), getTimeStamp(), getReceiver(), getCommenter());
-    }
-
-    @Override
-    public String toString() {
-        return "CommentDTO{" +
-            "id=" + id +
-            ", comment='" + comment + '\'' +
-            ", timeStamp=" + timeStamp +
-            ", receiver='" + receiver + '\'' +
-            ", commenter='" + commenter + '\'' +
-            '}';
+        return Objects.hash(getId(), getComment(), getTimeStamp(), getReceiver(), getPoster(), getImageUrl());
     }
 
     @Override

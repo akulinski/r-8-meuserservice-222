@@ -1,6 +1,7 @@
 package com.akulinski.r8meservice.service;
 
 import com.akulinski.r8meservice.domain.Comment;
+import com.akulinski.r8meservice.domain.CommentID;
 import com.akulinski.r8meservice.domain.CommentXProfile;
 import com.akulinski.r8meservice.repository.CommentRepository;
 import com.akulinski.r8meservice.repository.CommentXProfileRepository;
@@ -10,10 +11,8 @@ import com.akulinski.r8meservice.repository.search.CommentSearchRepository;
 import com.akulinski.r8meservice.security.SecurityUtils;
 import com.akulinski.r8meservice.service.dto.CommentDTO;
 import com.akulinski.r8meservice.service.mapper.CommentMapper;
-import com.google.cloud.Timestamp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +24,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 
 /**
  * Service Implementation for managing {@link Comment}.
@@ -64,15 +63,22 @@ public class CommentService {
      * @param commentDTO the entity to save.
      * @return the persisted entity.
      */
+    @Transactional
     public CommentDTO save(CommentDTO commentDTO) {
-        final var poster = userProfileRepository.findByUser_Login(commentDTO.getReceiver()).orElseThrow(() -> new UsernameNotFoundException(commentDTO.getReceiver()));
-        final var receiver = userProfileRepository.findByUser_Login(SecurityUtils.getCurrentUserLogin()
+        final var receiver = userProfileRepository.findByUser_Login(commentDTO.getReceiver()).orElseThrow(() -> new UsernameNotFoundException(commentDTO.getReceiver()));
+        final var poster = userProfileRepository.findByUser_Login(SecurityUtils.getCurrentUserLogin()
             .orElseThrow(() -> new IllegalStateException("Username not present")))
             .orElseThrow(() -> new UsernameNotFoundException(commentDTO.getReceiver()));
 
-        log.debug("Request to save Comment : {}", commentDTO);
+        if (commentDTO.getTimeStamp() == null)
+            commentDTO.setTimeStamp(Instant.now());
+
         Comment comment = commentMapper.toEntity(commentDTO);
         comment = commentRepository.save(comment);
+
+        CommentID commentID = new CommentID(receiver.getId(), poster.getId(), comment.getId());
+
+        log.debug("Request to save Comment : {}", commentDTO);
         CommentDTO result = commentMapper.toDto(comment);
         commentSearchRepository.save(comment);
 
@@ -80,6 +86,12 @@ public class CommentService {
         commentXProfile.setComment(comment);
         commentXProfile.setPoster(poster);
         commentXProfile.setReceiver(receiver);
+        commentXProfile.setCommentID(commentID);
+
+        result.setPoster(poster.getUser().getLogin());
+        result.setImageUrl(poster.getUser().getImageUrl());
+        result.setReceiver(receiver.getUser().getLogin());
+        result.setTimeStamp(commentDTO.getTimeStamp());
         commentXProfileRepository.save(commentXProfile);
         return result;
     }
@@ -140,25 +152,26 @@ public class CommentService {
     public List<CommentDTO> findCommentsForUser() {
         final var username = SecurityUtils.getCurrentUserLogin().orElseThrow(() -> new IllegalStateException("NO username for current user"));
         final var user = userRepository.findOneByLogin(username).orElseThrow(() -> new IllegalStateException(String.format("No user for username: %s", username)));
-        final var userProfile = userProfileRepository.findByUser(user).orElseThrow(()->new IllegalStateException(String.format("No profile connected to user: %s", username)));
+        final var userProfile = userProfileRepository.findByUser(user).orElseThrow(() -> new IllegalStateException(String.format("No profile connected to user: %s", username)));
 
         log.debug("Request to find all comments for user {}", username);
 
         List<CommentXProfile> allByReceiver = commentXProfileRepository.findAllByReceiver(userProfile);
 
-        return  allByReceiver.stream().map(commentXProfile -> {
+        return allByReceiver.stream().map(commentXProfile -> {
             final var commentDTO = new CommentDTO();
             try {
                 final var comment = commentRepository.findByCommentXProfile(commentXProfile)
                     .orElseThrow(() -> new IllegalStateException(String.format("No comment connected to commentXProfile, DB inconsistency detected for: %s", commentXProfile.toString())));
 
+                commentDTO.setImageUrl(commentXProfile.getPoster().getUser().getImageUrl());
                 commentDTO.setId(comment.getId());
                 commentDTO.setReceiver(commentXProfile.getReceiver().getUser().getLogin());
-                commentDTO.setCommenter(commentXProfile.getPoster().getUser().getLogin());
                 commentDTO.setComment(comment.getComment());
                 commentDTO.setTimeStamp(comment.getTimeStamp());
+                commentDTO.setPoster(commentXProfile.getPoster().getUser().getLogin());
                 return commentDTO;
-            }catch (RuntimeException ex){
+            } catch (RuntimeException ex) {
                 log.warn(ex.getLocalizedMessage());
             }
             commentDTO.setTimeStamp(Instant.now());
