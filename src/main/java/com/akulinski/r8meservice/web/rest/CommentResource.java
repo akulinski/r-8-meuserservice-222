@@ -113,42 +113,4 @@ public class CommentResource {
         return commentService.findCommentsForUser();
     }
 
-    /**
-     * {@code GET  /comments/:id} : get the "id" comment.
-     *
-     * @param id the id of the commentDTO to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the commentDTO, or with status {@code 404 (Not Found)}.
-     */
-    @GetMapping("/comments/{id}")
-    public ResponseEntity<CommentDTO> getComment(@PathVariable Long id) {
-        log.debug("REST request to get Comment : {}", id);
-        Optional<CommentDTO> commentDTO = commentService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(commentDTO);
-    }
-
-    /**
-     * {@code DELETE  /comments/:id} : delete the "id" comment.
-     *
-     * @param id the id of the commentDTO to delete.
-     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
-     */
-    @DeleteMapping("/comments/{id}")
-    public ResponseEntity<Void> deleteComment(@PathVariable Long id) {
-        log.debug("REST request to delete Comment : {}", id);
-        commentService.delete(id);
-        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString())).build();
-    }
-
-    /**
-     * {@code SEARCH  /_search/comments?query=:query} : search for the comment corresponding
-     * to the query.
-     *
-     * @param query the query of the comment search.
-     * @return the result of the search.
-     */
-    @GetMapping("/_search/comments")
-    public List<CommentDTO> searchComments(@RequestParam String query) {
-        log.debug("REST request to search Comments for query {}", query);
-        return commentService.search(query);
-    }
 }

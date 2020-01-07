@@ -3,10 +3,10 @@ package com.akulinski.r8meservice.web.rest;
 import com.akulinski.r8meservice.config.Constants;
 import com.akulinski.r8meservice.domain.User;
 import com.akulinski.r8meservice.domain.UserProfile;
-import com.akulinski.r8meservice.repository.CommentXProfileRepository;
 import com.akulinski.r8meservice.repository.FollowerXFollowedRepository;
 import com.akulinski.r8meservice.repository.UserProfileRepository;
 import com.akulinski.r8meservice.repository.UserRepository;
+import com.akulinski.r8meservice.repository.search.CommentSearchRepository;
 import com.akulinski.r8meservice.repository.search.UserProfileSearchRepository;
 import com.akulinski.r8meservice.repository.search.UserSearchRepository;
 import com.akulinski.r8meservice.security.AuthoritiesConstants;
@@ -22,23 +22,18 @@ import com.akulinski.r8meservice.web.rest.vm.PhotoVM;
 import com.akulinski.r8meservice.web.rest.vm.UserProfileVM;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import com.netflix.discovery.converters.Auto;
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.query.QueryStringQueryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
-import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -82,9 +77,9 @@ import java.util.stream.StreamSupport;
  */
 @RestController
 @RequestMapping("/api")
+@RequiredArgsConstructor
+@Slf4j
 public class UserResource {
-
-    private final Logger log = LoggerFactory.getLogger(UserResource.class);
 
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
@@ -97,8 +92,6 @@ public class UserResource {
 
     private final FollowerXFollowedRepository followerXFollowedRepository;
 
-    private final CommentXProfileRepository commentXProfileRepository;
-
     private final UserProfileSearchRepository userProfileSearchRepository;
 
     private final MailService mailService;
@@ -107,19 +100,7 @@ public class UserResource {
 
     private final PhotoStorageService photoStorageService;
 
-    public UserResource(UserService userService, UserRepository userRepository, UserProfileRepository userProfileRepository,
-                        FollowerXFollowedRepository followerXFollowedRepository, CommentXProfileRepository commentXProfileRepository, UserProfileSearchRepository userProfileSearchRepository, MailService mailService, UserSearchRepository userSearchRepository, PhotoStorageService photoStorageService) {
-
-        this.userService = userService;
-        this.userRepository = userRepository;
-        this.userProfileRepository = userProfileRepository;
-        this.followerXFollowedRepository = followerXFollowedRepository;
-        this.commentXProfileRepository = commentXProfileRepository;
-        this.userProfileSearchRepository = userProfileSearchRepository;
-        this.mailService = mailService;
-        this.userSearchRepository = userSearchRepository;
-        this.photoStorageService = photoStorageService;
-    }
+    private final CommentSearchRepository commentSearchRepository;
 
     /**
      * {@code POST  /users}  : Creates a new user.
@@ -273,7 +254,7 @@ public class UserResource {
             return userProfile;
         });
 
-        return new UserProfileVM(user.getLogin(), profile.getCurrentRating(), currentUser.getImageUrl(), followerXFollowedRepository.findAllByFollowed(profile).size(), commentXProfileRepository.findAllByReceiver(profile).size());
+        return new UserProfileVM(user.getLogin(), profile.getCurrentRating(), currentUser.getImageUrl(), followerXFollowedRepository.findAllByFollowed(profile).size(), commentSearchRepository.findAllByReceiver(profile.getId()).size());
     }
 
     @PostMapping("/user/upload-photo")
@@ -304,6 +285,6 @@ public class UserResource {
         final var currentUser = userRepository.findOneByLogin(currentLogin).orElseThrow(() -> new IllegalStateException(String.format("User not found with login: %s", currentLogin)));
         final var profile = userProfileRepository.findByUser(currentUser).orElseThrow(() -> new IllegalStateException(String.format("No profile is connected to user: %s", currentLogin)));
 
-        return new UserProfileVM(currentLogin, profile.getCurrentRating(), currentUser.getImageUrl(), followerXFollowedRepository.findAllByFollowed(profile).size(), commentXProfileRepository.findAllByReceiver(profile).size());
+        return new UserProfileVM(currentLogin, profile.getCurrentRating(), currentUser.getImageUrl(), followerXFollowedRepository.findAllByFollowed(profile).size(), commentSearchRepository.findAllByReceiver(profile.getId()).size());
     }
 }
