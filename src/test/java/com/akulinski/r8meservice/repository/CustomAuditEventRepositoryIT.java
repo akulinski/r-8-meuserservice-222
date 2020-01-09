@@ -1,3 +1,4 @@
+/*
 package com.akulinski.r8meservice.repository;
 
 import com.akulinski.r8meservice.R8Meuserservice2App;
@@ -26,9 +27,11 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static com.akulinski.r8meservice.repository.CustomAuditEventRepository.EVENT_DATA_COLUMN_MAX_LENGTH;
 
+*/
 /**
  * Integration tests for {@link CustomAuditEventRepository}.
- */
+ *//*
+
 @SpringBootTest(classes = R8Meuserservice2App.class)
 @ExtendWith(RedisTestContainerExtension.class)
 @Transactional
@@ -164,3 +167,4 @@ public class CustomAuditEventRepositoryIT {
     }
 
 }
+*/

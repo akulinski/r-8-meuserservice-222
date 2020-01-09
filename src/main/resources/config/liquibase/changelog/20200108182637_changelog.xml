@@ -1,0 +1,59 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+    <changeSet author="AlbertKuliński (generated)" id="1578508026442-6">
+        <dropForeignKeyConstraint baseTableName="COMMENT" constraintName="FKMI3TIQWUSFDVNQ42TCRN9PD4I"/>
+    </changeSet>
+    <changeSet author="AlbertKuliński (generated)" id="1578508026442-7">
+        <dropForeignKeyConstraint baseTableName="COMMENT_X_PROFILE" constraintName="FK_COMMENT_X_PROFILE_COMMENT_ID"/>
+    </changeSet>
+    <changeSet author="AlbertKuliński (generated)" id="1578508026442-8">
+        <dropForeignKeyConstraint baseTableName="COMMENT_X_PROFILE" constraintName="FK_COMMENT_X_PROFILE_POSTER_ID"/>
+    </changeSet>
+    <changeSet author="AlbertKuliński (generated)" id="1578508026442-9">
+        <dropForeignKeyConstraint baseTableName="COMMENT_X_PROFILE" constraintName="FK_COMMENT_X_PROFILE_RECEIVER_ID"/>
+    </changeSet>
+    <changeSet author="AlbertKuliński (generated)" id="1578508026442-10">
+        <dropForeignKeyConstraint baseTableName="RATE_X_PROFILE" constraintName="FK_RATE_X_PROFILE_RATED_ID"/>
+    </changeSet>
+    <changeSet author="AlbertKuliński (generated)" id="1578508026442-11">
+        <dropForeignKeyConstraint baseTableName="RATE_X_PROFILE" constraintName="FK_RATE_X_PROFILE_RATER_ID"/>
+    </changeSet>
+    <changeSet author="AlbertKuliński (generated)" id="1578508026442-12">
+        <dropForeignKeyConstraint baseTableName="RATE_X_PROFILE" constraintName="FK_RATE_X_PROFILE_RATE_ID"/>
+    </changeSet>
+    <changeSet author="AlbertKuliński (generated)" id="1578508026442-13">
+        <dropUniqueConstraint constraintName="UX_COMMENT_X_PROFILE_COMMENT_ID" tableName="COMMENT_X_PROFILE"/>
+    </changeSet>
+    <changeSet author="AlbertKuliński (generated)" id="1578508026442-14">
+        <dropTable tableName="COMMENT"/>
+    </changeSet>
+    <changeSet author="AlbertKuliński (generated)" id="1578508026442-15">
+        <dropTable tableName="COMMENT_X_PROFILE"/>
+    </changeSet>
+    <changeSet author="AlbertKuliński (generated)" id="1578508026442-16">
+        <dropTable tableName="RATE"/>
+    </changeSet>
+    <changeSet author="AlbertKuliński (generated)" id="1578508026442-17">
+        <dropTable tableName="RATE_X_PROFILE"/>
+    </changeSet>
+    <changeSet author="AlbertKuliński (generated)" id="1578508026442-1">
+        <dropUniqueConstraint constraintName="UC_FOLLOWER_X_FOLLOWEDFOLLOWED_ID_COL" tableName="follower_x_followed"/>
+        <addUniqueConstraint columnNames="followed_id" constraintName="UC_FOLLOWER_X_FOLLOWEDFOLLOWED_ID_COL" tableName="follower_x_followed"/>
+    </changeSet>
+    <changeSet author="AlbertKuliński (generated)" id="1578508026442-2">
+        <dropUniqueConstraint constraintName="UC_FOLLOWER_X_FOLLOWEDFOLLOWER_ID_COL" tableName="follower_x_followed"/>
+        <addUniqueConstraint columnNames="follower_id" constraintName="UC_FOLLOWER_X_FOLLOWEDFOLLOWER_ID_COL" tableName="follower_x_followed"/>
+    </changeSet>
+    <changeSet author="AlbertKuliński (generated)" id="1578508026442-3">
+        <dropUniqueConstraint constraintName="UC_JHI_USEREMAIL_COL" tableName="jhi_user"/>
+        <addUniqueConstraint columnNames="email" constraintName="UC_JHI_USEREMAIL_COL" tableName="jhi_user"/>
+    </changeSet>
+    <changeSet author="AlbertKuliński (generated)" id="1578508026442-4">
+        <dropUniqueConstraint constraintName="UC_JHI_USERLOGIN_COL" tableName="jhi_user"/>
+        <addUniqueConstraint columnNames="login" constraintName="UC_JHI_USERLOGIN_COL" tableName="jhi_user"/>
+    </changeSet>
+    <changeSet author="AlbertKuliński (generated)" id="1578508026442-5">
+        <dropUniqueConstraint constraintName="UC_USER_PROFILEUSER_ID_COL" tableName="user_profile"/>
+        <addUniqueConstraint columnNames="user_id" constraintName="UC_USER_PROFILEUSER_ID_COL" tableName="user_profile"/>
+    </changeSet>
+</databaseChangeLog>

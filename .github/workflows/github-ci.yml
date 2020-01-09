@@ -26,7 +26,7 @@ jobs:
             - name: Run backend test
               run: |
                  chmod +x mvnw
-                 ./mvnw -ntp clean verify -P-webpack
+                 ./mvnw -ntp clean test -P-webpack
             - name: Run frontend test
               run: npm run test
             - name: Package application

@@ -12,8 +12,7 @@ import com.akulinski.r8meservice.security.SecurityUtils;
 import com.akulinski.r8meservice.service.dto.SignUpAndroidDTO;
 import com.akulinski.r8meservice.service.dto.UserDTO;
 import com.akulinski.r8meservice.service.util.RandomUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.CacheManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,9 +31,8 @@ import java.util.stream.Collectors;
  */
 @Service
 @Transactional
+@Slf4j
 public class UserService {
-
-    private final Logger log = LoggerFactory.getLogger(UserService.class);
 
     private final UserRepository userRepository;
 
@@ -50,13 +48,7 @@ public class UserService {
 
     private final UserProfileSearchRepository userProfileSearchRepository;
 
-    private final RateXProfileRepository rateXProfileRepository;
-
-    private final CommentXProfileRepository commentXProfileRepository;
-
-    private final FollowerXFollowedRepository followerXFollowedRepository;
-
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserSearchRepository userSearchRepository, AuthorityRepository authorityRepository, CacheManager cacheManager, UserProfileRepository userProfileRepository, UserProfileSearchRepository userProfileSearchRepository, RateXProfileRepository rateXProfileRepository, CommentXProfileRepository commentXProfileRepository, FollowerXFollowedRepository followerXFollowedRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserSearchRepository userSearchRepository, AuthorityRepository authorityRepository, CacheManager cacheManager, UserProfileRepository userProfileRepository, UserProfileSearchRepository userProfileSearchRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.userSearchRepository = userSearchRepository;
@@ -64,10 +56,8 @@ public class UserService {
         this.cacheManager = cacheManager;
         this.userProfileRepository = userProfileRepository;
         this.userProfileSearchRepository = userProfileSearchRepository;
-        this.rateXProfileRepository = rateXProfileRepository;
-        this.commentXProfileRepository = commentXProfileRepository;
-        this.followerXFollowedRepository = followerXFollowedRepository;
     }
+
 
     public Optional<User> activateRegistration(String key) {
         log.debug("Activating user for activation key {}", key);
@@ -219,6 +209,26 @@ public class UserService {
 
     public User createUser(UserDTO userDTO) {
         User user = getUser(userDTO, RandomUtil.generatePassword());
+        user.setActivated(true);
+        if (userDTO.getAuthorities() != null) {
+            Set<Authority> authorities = userDTO.getAuthorities().stream()
+                .map(authorityRepository::findById)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toSet());
+            user.setAuthorities(authorities);
+        }
+        userRepository.save(user);
+        userSearchRepository.save(user);
+        this.clearUserCaches(user);
+        log.debug("Created Information for User: {}", user);
+        createProfile(user);
+        log.debug("Created Profile for User: {}", user);
+        return user;
+    }
+
+    public User createUser(UserDTO userDTO, String password) {
+        User user = getUser(userDTO, password);
         user.setActivated(true);
         if (userDTO.getAuthorities() != null) {
             Set<Authority> authorities = userDTO.getAuthorities().stream()

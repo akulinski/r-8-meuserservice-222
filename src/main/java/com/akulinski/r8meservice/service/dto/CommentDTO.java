@@ -1,4 +1,10 @@
 package com.akulinski.r8meservice.service.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.validation.constraints.NotNull;
 import java.time.Instant;
 import java.io.Serializable;
 import java.util.Objects;
@@ -6,9 +12,12 @@ import java.util.Objects;
 /**
  * A DTO for the {@link com.akulinski.r8meservice.domain.Comment} entity.
  */
-public class CommentDTO implements Serializable {
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class CommentDTO implements Serializable, Comparable {
 
-    private Long id;
+    private String id;
 
     private String comment;
 
@@ -16,65 +25,12 @@ public class CommentDTO implements Serializable {
 
     private String receiver;
 
-    public Long getId() {
-        return id;
-    }
+    private String poster;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
-
-    public Instant getTimeStamp() {
-        return timeStamp;
-    }
-
-    public void setTimeStamp(Instant timeStamp) {
-        this.timeStamp = timeStamp;
-    }
+    private String imageUrl;
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        CommentDTO commentDTO = (CommentDTO) o;
-        if (commentDTO.getId() == null || getId() == null) {
-            return false;
-        }
-        return Objects.equals(getId(), commentDTO.getId());
-    }
-
-    public String getReceiver() {
-        return receiver;
-    }
-
-    public void setReceiver(String receiver) {
-        this.receiver = receiver;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(getId());
-    }
-
-    @Override
-    public String toString() {
-        return "CommentDTO{" +
-            "id=" + getId() +
-            ", comment='" + getComment() + "'" +
-            ", timeStamp='" + getTimeStamp() + "'" +
-            "}";
+    public int compareTo(@NotNull Object o) {
+        return this.getTimeStamp().compareTo(((CommentDTO) o).getTimeStamp());
     }
 }

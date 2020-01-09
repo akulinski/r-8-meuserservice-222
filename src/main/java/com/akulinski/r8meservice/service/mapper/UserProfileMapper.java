@@ -11,10 +11,8 @@ import org.mapstruct.*;
 @Mapper(componentModel = "spring", uses = {UserMapper.class})
 public interface UserProfileMapper extends EntityMapper<UserProfileDTO, UserProfile> {
 
-    @Mapping(source = "user.id", target = "userId")
     UserProfileDTO toDto(UserProfile userProfile);
 
-    @Mapping(source = "userId", target = "user")
     UserProfile toEntity(UserProfileDTO userProfileDTO);
 
     default UserProfile fromId(Long id) {

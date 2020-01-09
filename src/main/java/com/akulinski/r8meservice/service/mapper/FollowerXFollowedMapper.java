@@ -11,13 +11,14 @@ import org.mapstruct.*;
 @Mapper(componentModel = "spring", uses = {UserProfileMapper.class})
 public interface FollowerXFollowedMapper extends EntityMapper<FollowerXFollowedDTO, FollowerXFollowed> {
 
-    @Mapping(source = "follower.id", target = "followerId")
-    @Mapping(source = "followed.id", target = "followedId")
-    FollowerXFollowedDTO toDto(FollowerXFollowed followerXFollowed);
+    default FollowerXFollowedDTO toDto(FollowerXFollowed followerXFollowed){
+        return new FollowerXFollowedDTO();
 
-    @Mapping(source = "followerId", target = "follower")
-    @Mapping(source = "followedId", target = "followed")
-    FollowerXFollowed toEntity(FollowerXFollowedDTO followerXFollowedDTO);
+    }
+
+   default FollowerXFollowed toEntity(FollowerXFollowedDTO followerXFollowedDTO){
+        return new FollowerXFollowed();
+   }
 
     default FollowerXFollowed fromId(Long id) {
         if (id == null) {

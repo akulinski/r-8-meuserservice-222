@@ -2,26 +2,20 @@ package com.akulinski.r8meservice.web.rest;
 
 import com.akulinski.r8meservice.security.AuthoritiesConstants;
 import com.akulinski.r8meservice.service.CommentService;
-import com.akulinski.r8meservice.web.rest.errors.BadRequestAlertException;
 import com.akulinski.r8meservice.service.dto.CommentDTO;
-
+import com.akulinski.r8meservice.web.rest.errors.BadRequestAlertException;
 import io.github.jhipster.web.util.HeaderUtil;
-import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * REST controller for managing {@link com.akulinski.r8meservice.domain.Comment}.
@@ -87,16 +81,11 @@ public class CommentResource {
      * {@code GET  /comments} : get all the comments.
      *
 
-     * @param filter the filter of the request.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of comments in body.
      */
     @PreAuthorize("hasRole(\"" + AuthoritiesConstants.ADMIN + "\")")
     @GetMapping("/comments/all")
-    public List<CommentDTO> getAllComments(@RequestParam(required = false) String filter) {
-        if ("commentxprofile-is-null".equals(filter)) {
-            log.debug("REST request to get all Comments where commentXProfile is null");
-            return commentService.findAllWhereCommentXProfileIsNull();
-        }
+    public List<CommentDTO> getAllComments() {
         log.debug("REST request to get all Comments");
         return commentService.findAll();
     }
@@ -106,56 +95,20 @@ public class CommentResource {
      * {@code GET  /comments} : get all the comments.
      *
 
-     * @param filter the filter of the request.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of comments in body.
      */
     @PreAuthorize("hasRole(\"" + AuthoritiesConstants.ADMIN + "\")")
     @GetMapping("/comments")
-    public List<CommentDTO> getCommentsForUser(@RequestParam(required = false) String filter) {
-        if ("commentxprofile-is-null".equals(filter)) {
-            log.debug("REST request to get all Comments where commentXProfile is null");
-            return commentService.findAllWhereCommentXProfileIsNull();
-        }
+    public List<CommentDTO> getComments() {
+
         log.debug("REST request to get all Comments");
         return commentService.findAll();
     }
 
-    /**
-     * {@code GET  /comments/:id} : get the "id" comment.
-     *
-     * @param id the id of the commentDTO to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the commentDTO, or with status {@code 404 (Not Found)}.
-     */
-    @GetMapping("/comments/{id}")
-    public ResponseEntity<CommentDTO> getComment(@PathVariable Long id) {
-        log.debug("REST request to get Comment : {}", id);
-        Optional<CommentDTO> commentDTO = commentService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(commentDTO);
+    @GetMapping("/comments/comments-for-user")
+    @ResponseStatus(HttpStatus.OK)
+    public List<CommentDTO> getCommentsForUser(){
+        return commentService.findCommentsForUser();
     }
 
-    /**
-     * {@code DELETE  /comments/:id} : delete the "id" comment.
-     *
-     * @param id the id of the commentDTO to delete.
-     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
-     */
-    @DeleteMapping("/comments/{id}")
-    public ResponseEntity<Void> deleteComment(@PathVariable Long id) {
-        log.debug("REST request to delete Comment : {}", id);
-        commentService.delete(id);
-        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString())).build();
-    }
-
-    /**
-     * {@code SEARCH  /_search/comments?query=:query} : search for the comment corresponding
-     * to the query.
-     *
-     * @param query the query of the comment search.
-     * @return the result of the search.
-     */
-    @GetMapping("/_search/comments")
-    public List<CommentDTO> searchComments(@RequestParam String query) {
-        log.debug("REST request to search Comments for query {}", query);
-        return commentService.search(query);
-    }
 }

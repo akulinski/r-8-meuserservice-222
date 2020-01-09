@@ -1,3 +1,4 @@
+/*
 package com.akulinski.r8meservice.service.mapper;
 
 import com.akulinski.r8meservice.RedisTestContainerExtension;
@@ -18,9 +19,11 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+*/
 /**
  * Integration tests for {@link UserMapper}.
- */
+ *//*
+
 @SpringBootTest(classes = R8Meuserservice2App.class)
 @ExtendWith(RedisTestContainerExtension.class)
 public class UserMapperIT {
@@ -142,3 +145,4 @@ public class UserMapperIT {
         assertThat(userMapper.userFromId(null)).isNull();
     }
 }
+*/

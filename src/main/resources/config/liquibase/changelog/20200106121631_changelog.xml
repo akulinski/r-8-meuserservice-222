@@ -1,0 +1,83 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+    <changeSet author="AlbertKuliński (generated)" id="1578313003126-11">
+        <addColumn tableName="comment">
+            <column name="commentxprofile_comment_id" type="bigint"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="AlbertKuliński (generated)" id="1578313003126-12">
+        <addColumn tableName="comment">
+            <column name="commentxprofile_poster_id" type="bigint"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="AlbertKuliński (generated)" id="1578313003126-13">
+        <addColumn tableName="comment">
+            <column name="commentxprofile_receiver_id" type="bigint"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="AlbertKuliński (generated)" id="1578313003126-14">
+        <createIndex indexName="IX_comment_x_profilePK" tableName="comment_x_profile" unique="true">
+            <column name="comment_id"/>
+            <column name="poster_id"/>
+            <column name="receiver_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="AlbertKuliński (generated)" id="1578313003126-15">
+        <addForeignKeyConstraint baseColumnNames="commentxprofile_comment_id,commentxprofile_poster_id,commentxprofile_receiver_id" baseTableName="comment" constraintName="FKmi3tiqwusfdvnq42tcrn9pd4i" deferrable="false" initiallyDeferred="false" referencedColumnNames="comment_id,poster_id,receiver_id" referencedTableName="comment_x_profile" validate="true"/>
+    </changeSet>
+    <changeSet author="AlbertKuliński (generated)" id="1578313003126-16">
+        <dropUniqueConstraint constraintName="UX_COMMENT_X_PROFILE_POSTER_ID" tableName="COMMENT_X_PROFILE"/>
+    </changeSet>
+    <changeSet author="AlbertKuliński (generated)" id="1578313003126-17">
+        <dropUniqueConstraint constraintName="UX_COMMENT_X_PROFILE_RECEIVER_ID" tableName="COMMENT_X_PROFILE"/>
+    </changeSet>
+    <changeSet author="AlbertKuliński (generated)" id="1578313003126-18">
+        <dropUniqueConstraint constraintName="UX_RATE_X_PROFILE_RATED_ID" tableName="RATE_X_PROFILE"/>
+    </changeSet>
+    <changeSet author="AlbertKuliński (generated)" id="1578313003126-19">
+        <dropUniqueConstraint constraintName="UX_RATE_X_PROFILE_RATER_ID" tableName="RATE_X_PROFILE"/>
+    </changeSet>
+    <changeSet author="AlbertKuliński (generated)" id="1578313003126-20">
+        <dropUniqueConstraint constraintName="UX_RATE_X_PROFILE_RATE_ID" tableName="RATE_X_PROFILE"/>
+    </changeSet>
+    <changeSet author="AlbertKuliński (generated)" id="1578313003126-21">
+        <dropColumn columnName="ID" tableName="comment_x_profile"/>
+    </changeSet>
+    <changeSet author="AlbertKuliński (generated)" id="1578313003126-1">
+        <addNotNullConstraint columnDataType="bigint" columnName="comment_id" tableName="comment_x_profile"/>
+    </changeSet>
+    <changeSet author="AlbertKuliński (generated)" id="1578313003126-2">
+        <addNotNullConstraint columnDataType="bigint" columnName="poster_id" tableName="comment_x_profile"/>
+    </changeSet>
+    <changeSet author="AlbertKuliński (generated)" id="1578313003126-3">
+        <addNotNullConstraint columnDataType="bigint" columnName="receiver_id" tableName="comment_x_profile"/>
+    </changeSet>
+    <changeSet author="AlbertKuliński (generated)" id="1578313003126-4">
+        <dropPrimaryKey tableName="comment_x_profile"/>
+        <addPrimaryKey columnNames="comment_id, poster_id, receiver_id" constraintName="comment_x_profilePK" tableName="comment_x_profile"/>
+    </changeSet>
+    <changeSet author="AlbertKuliński (generated)" id="1578313003126-5">
+        <dropUniqueConstraint constraintName="UC_FOLLOWER_X_FOLLOWEDFOLLOWED_ID_COL" tableName="follower_x_followed"/>
+        <addUniqueConstraint columnNames="followed_id" constraintName="UC_FOLLOWER_X_FOLLOWEDFOLLOWED_ID_COL" tableName="follower_x_followed"/>
+    </changeSet>
+    <changeSet author="AlbertKuliński (generated)" id="1578313003126-6">
+        <dropUniqueConstraint constraintName="UC_FOLLOWER_X_FOLLOWEDFOLLOWER_ID_COL" tableName="follower_x_followed"/>
+        <addUniqueConstraint columnNames="follower_id" constraintName="UC_FOLLOWER_X_FOLLOWEDFOLLOWER_ID_COL" tableName="follower_x_followed"/>
+    </changeSet>
+    <changeSet author="AlbertKuliński (generated)" id="1578313003126-7">
+        <dropUniqueConstraint constraintName="UC_JHI_USEREMAIL_COL" tableName="jhi_user"/>
+        <addUniqueConstraint columnNames="email" constraintName="UC_JHI_USEREMAIL_COL" tableName="jhi_user"/>
+    </changeSet>
+    <changeSet author="AlbertKuliński (generated)" id="1578313003126-8">
+        <dropUniqueConstraint constraintName="UC_JHI_USERLOGIN_COL" tableName="jhi_user"/>
+        <addUniqueConstraint columnNames="login" constraintName="UC_JHI_USERLOGIN_COL" tableName="jhi_user"/>
+    </changeSet>
+    <changeSet author="AlbertKuliński (generated)" id="1578313003126-9">
+        <dropUniqueConstraint constraintName="UC_USER_PROFILEUSER_ID_COL" tableName="user_profile"/>
+        <addUniqueConstraint columnNames="user_id" constraintName="UC_USER_PROFILEUSER_ID_COL" tableName="user_profile"/>
+    </changeSet>
+    <changeSet author="AlbertKuliński (generated)" id="1578313003126-10">
+        <dropUniqueConstraint constraintName="UK_4c4ifi7yjm3xte0ja2fj4xg34" tableName="comment_x_profile"/>
+        <addUniqueConstraint columnNames="comment_id" constraintName="UK_4c4ifi7yjm3xte0ja2fj4xg34" tableName="comment_x_profile"/>
+    </changeSet>
+</databaseChangeLog>
