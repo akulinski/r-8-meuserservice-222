@@ -248,17 +248,10 @@ public class UserResource {
     }
 
     private UserProfileVM getUserProfileVM(User user) {
-        final var currentUser = userRepository.findById(user.getId()).orElseThrow(() -> new IllegalStateException(String.format("User not found with id: %s", user.getId())));
 
-        final var profile = userProfileRepository.findByUser(currentUser).orElseGet(() -> {
-            UserProfile userProfile = new UserProfile();
-            userProfile.setUser(currentUser);
-            userProfileRepository.save(userProfile);
-            userProfileSearchRepository.save(userProfile);
-            return userProfile;
-        });
+        final var profile = userProfileRepository.findByUser(user).orElseThrow(()->new IllegalStateException(String.format("No profile found for user: %d", user.getId())));
 
-        return new UserProfileVM(user.getLogin(), profile.getCurrentRating(), currentUser.getImageUrl(), followerXFollowedRepository.findAllByFollowed(profile).size(), commentSearchRepository.findAllByReceiver(profile.getId()).size());
+        return new UserProfileVM(user.getLogin(), profile.getCurrentRating(), user.getImageUrl(), followerXFollowedRepository.findAllByFollowed(profile).size(), commentSearchRepository.findAllByReceiver(profile.getId()).size());
     }
 
     @PostMapping("/user/upload-photo")
