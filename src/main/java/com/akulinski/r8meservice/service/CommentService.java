@@ -53,10 +53,13 @@ public class CommentService {
         comment.setComment(commentDTO.getComment());
         comment.setPoster(poster.getId());
         comment.setReceiver(receiver.getId());
+
         comment = commentSearchRepository.save(comment);
 
+        commentDTO.setImageUrl(poster.getUser().getImageUrl());
         commentDTO.setPoster(poster.getUser().getLogin());
         commentDTO.setId(comment.getId());
+
         log.debug("Request to save Comment : {}", commentDTO);
 
         return commentDTO;

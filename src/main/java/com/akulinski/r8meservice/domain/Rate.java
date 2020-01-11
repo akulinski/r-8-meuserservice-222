@@ -1,6 +1,5 @@
 package com.akulinski.r8meservice.domain;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,7 +11,7 @@ import java.time.Instant;
  */
 @Data
 @NoArgsConstructor
-public class Rate implements Serializable {
+public class Rate implements Serializable, ProtectedResource {
 
     private static final long serialVersionUID = 1L;
 
@@ -22,6 +21,8 @@ public class Rate implements Serializable {
 
     private Double value;
 
+    private String question;
+
     public Rate(Long posterId, Long receiverId, Double value) {
         this.poster = posterId;
         this.receiver = receiverId;
@@ -29,4 +30,9 @@ public class Rate implements Serializable {
     }
 
     private Instant timeStamp = Instant.now();
+
+    @Override
+    public long getOwner() {
+        return this.poster;
+    }
 }

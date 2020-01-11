@@ -6,6 +6,7 @@ import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import javax.persistence.Id;
+import javax.persistence.Index;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.LinkedList;
@@ -13,7 +14,7 @@ import java.util.List;
 
 @Data
 @Document(indexName = "question", type = "question")
-public class Question implements Serializable {
+public class Question implements Serializable, ProtectedResource {
 
     private static final long serialVersionUID = 1L;
 
@@ -40,5 +41,10 @@ public class Question implements Serializable {
         this.content = content;
         this.poster = poster;
         rates = new LinkedList<>();
+    }
+
+    @Override
+    public long getOwner() {
+        return poster;
     }
 }

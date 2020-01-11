@@ -56,7 +56,7 @@ public class QuestionService {
     }
 
     public List<Question> getQuestionsForUser(String username) {
-        final var posterUser = userRepository.findOneByLogin(username).orElseThrow(()->new IllegalStateException(String.format("No user found by username: %s", username)));
+        final var posterUser = userRepository.findOneByLogin(username).orElseThrow(() -> new IllegalStateException(String.format("No user found by username: %s", username)));
         final var posterProfile = userProfileRepository.findByUser(posterUser).orElseThrow(() -> new IllegalStateException(String.format("No profile connected to user: %d", posterUser.getId())));
         return questionSearchRepository.findAllByPoster(posterProfile.getId());
     }
@@ -64,5 +64,9 @@ public class QuestionService {
     public Question getById(String id) {
         return questionSearchRepository.findById(id)
             .orElseThrow(() -> new IllegalStateException(String.format("No Question found by id: %s", id)));
+    }
+
+    public void deleteById(String id) {
+        questionSearchRepository.findById(id).ifPresent(questionSearchRepository::delete);
     }
 }

@@ -19,7 +19,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n\t\"username\":\"user\",\n\t\"password\":\"user\"\n}",
+          "raw": "{\n\t\"username\":\"admin\",\n\t\"password\":\"admin\"\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -60,7 +60,7 @@
       "response": []
     },
     {
-      "name": "localhost:8080/api/user/upload-photo",
+      "name": "add profile photo",
       "request": {
         "auth": {
           "type": "bearer",
@@ -101,7 +101,7 @@
           "bearer": [
             {
               "key": "token",
-              "value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTU3ODYwMjcwNn0.UiAEYAJhwnw09_JylsgXTV-kUBH2bif_T6dDvs4WsvVSguJuZi1ttIQIaSRvbMzsJzcgHVvVEsGQG0fVZa_psA",
+              "value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImF1dGgiOiJST0xFX0FETUlOLFJPTEVfVVNFUiIsImV4cCI6MTU3ODY4ODY0Nn0.rdkiNnwafLTKLR1C00hg1M2AkRZ3U-smoWzGwmcBFE32JNr_S9P2JHpDco2BUic7T2Qqn525seFPQHNj5gcXxw",
               "type": "string"
             }
           ]
@@ -165,7 +165,7 @@
           "bearer": [
             {
               "key": "token",
-              "value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTU3ODYwMjcwNn0.UiAEYAJhwnw09_JylsgXTV-kUBH2bif_T6dDvs4WsvVSguJuZi1ttIQIaSRvbMzsJzcgHVvVEsGQG0fVZa_psA",
+              "value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImF1dGgiOiJST0xFX0FETUlOLFJPTEVfVVNFUiIsImV4cCI6MTU3ODY5MDYwMX0.g3EKxVYkxfw2eIO4z5Ppz1cUOpAeN1nDh32nmCLuAjdzA3XZ8UOcfUBJnG8yF49s1I9g0egZTBuCKXaoEPxzUA",
               "type": "string"
             }
           ]
@@ -192,7 +192,7 @@
           "bearer": [
             {
               "key": "token",
-              "value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTU3ODUxOTM0Mn0.YWNubEyb9_HoDOPmVWAL786EHMt9HiI_20MYxsQH4TYsq5o_AG2dnWZPaV0FSataMcPmikSMGCF8h1GjxZIXEg",
+              "value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTU3ODgyNjQ2MH0.gM8uOrd6SHeawsenIc7bymG-VfrTdqdHCHEyJFztYBSMOJuuAoKDAzbi-LesJN7qFjbdsQtQFLVRShrd7PPcew",
               "type": "string"
             }
           ]
@@ -220,7 +220,7 @@
       "response": []
     },
     {
-      "name": "localhost:8080/api/rates",
+      "name": "add rate",
       "request": {
         "auth": {
           "type": "bearer",
@@ -291,7 +291,7 @@
           "bearer": [
             {
               "key": "token",
-              "value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTU3ODYwMjcwNn0.UiAEYAJhwnw09_JylsgXTV-kUBH2bif_T6dDvs4WsvVSguJuZi1ttIQIaSRvbMzsJzcgHVvVEsGQG0fVZa_psA",
+              "value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImF1dGgiOiJST0xFX0FETUlOLFJPTEVfVVNFUiIsImV4cCI6MTU3ODc2NTQ4Nn0.nC8ntNzl2zGU0iOnqS1o0WFmRapYs6BkUWctxbpKWIcTWqsXiXNbD8yeq8bsdtgCe3oVqcZZvfbbZ4sLprN9Pg",
               "type": "string"
             }
           ]
@@ -339,7 +339,7 @@
           "bearer": [
             {
               "key": "token",
-              "value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTU3ODYwMjcwNn0.UiAEYAJhwnw09_JylsgXTV-kUBH2bif_T6dDvs4WsvVSguJuZi1ttIQIaSRvbMzsJzcgHVvVEsGQG0fVZa_psA",
+              "value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImF1dGgiOiJST0xFX0FETUlOLFJPTEVfVVNFUiIsImV4cCI6MTU3ODY5MDYwMX0.g3EKxVYkxfw2eIO4z5Ppz1cUOpAeN1nDh32nmCLuAjdzA3XZ8UOcfUBJnG8yF49s1I9g0egZTBuCKXaoEPxzUA",
               "type": "string"
             }
           ]
@@ -399,6 +399,176 @@
           "host": ["localhost"],
           "port": "8080",
           "path": ["api", "user", "user"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "remove data from elastic",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "localhost:9200/question",
+          "host": ["localhost"],
+          "port": "9200",
+          "path": ["question"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "remove al comments ",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "localhost:9200/comment",
+          "host": ["localhost"],
+          "port": "9200",
+          "path": ["comment"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "localhost:8080/api/question/question-by-username/admin",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImF1dGgiOiJST0xFX0FETUlOLFJPTEVfVVNFUiIsImV4cCI6MTU3ODY5MDYwMX0.g3EKxVYkxfw2eIO4z5Ppz1cUOpAeN1nDh32nmCLuAjdzA3XZ8UOcfUBJnG8yF49s1I9g0egZTBuCKXaoEPxzUA",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "localhost:8080/api/question/question-by-username/admin",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "question", "question-by-username", "admin"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "localhost:9200/question/_search",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "name": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n\t\"query\": {\n\t\t\"match_all\":{}\n\t}\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "localhost:9200/question/_search",
+          "host": ["localhost"],
+          "port": "9200",
+          "path": ["question", "_search"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "delate rate",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImF1dGgiOiJST0xFX0FETUlOLFJPTEVfVVNFUiIsImV4cCI6MTU3ODgyNjc3OX0.CeC2fmb5Q9X2Q-9N6vX8FrwL-a6OP8rsKBh2Zh3ZjnULwSWcxad4uQUfJQxizPMoNqHhPLmqsJhzH3R1LtX_Hw",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "name": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"poster\": 1002,\n    \"receiver\": 1004,\n    \"value\": 0.5950966409153949,\n    \"question\": \"U-FdlG8BrOQIQOnKbD42\",\n    \"timeStamp\": \"2020-01-11T11:29:08.165944Z\",\n    \"owner\": 1002\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "localhost:8080/api/rates",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "rates"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "find question by id ",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImF1dGgiOiJST0xFX0FETUlOLFJPTEVfVVNFUiIsImV4cCI6MTU3ODgxNzA5MH0.TxvCkXKgexwEVSkfcOZOMqByRn0SsdY6_x7311Vy9wXB00wGPZu1kRKa1PADdZM7mN23KH2Z-O3uT2NBbc4UgA",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "localhost:8080/api/question/8uG4k28BrOQIQOnKtzkY",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "question", "8uG4k28BrOQIQOnKtzkY"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "delete quesiton",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImF1dGgiOiJST0xFX0FETUlOLFJPTEVfVVNFUiIsImV4cCI6MTU3ODgxNzA5MH0.TxvCkXKgexwEVSkfcOZOMqByRn0SsdY6_x7311Vy9wXB00wGPZu1kRKa1PADdZM7mN23KH2Z-O3uT2NBbc4UgA",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "localhost:8080/api/question/8uG4k28BrOQIQOnKtzkY",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "question", "8uG4k28BrOQIQOnKtzkY"]
         }
       },
       "response": []

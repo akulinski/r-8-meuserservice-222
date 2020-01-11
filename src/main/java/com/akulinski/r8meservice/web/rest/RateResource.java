@@ -1,5 +1,6 @@
 package com.akulinski.r8meservice.web.rest;
 
+import com.akulinski.r8meservice.domain.Rate;
 import com.akulinski.r8meservice.service.RateService;
 import com.akulinski.r8meservice.service.dto.RateDTO;
 import com.akulinski.r8meservice.web.rest.errors.BadRequestAlertException;
@@ -84,11 +85,16 @@ public class RateResource {
         return rateService.findAll();
     }
 
+    @DeleteMapping("/rates")
+    public ResponseEntity deleteRate(@RequestBody Rate rate) {
+        rateService.deleteRate(rate);
+        return ResponseEntity.accepted().build();
+    }
+
     /**
      * Return rates for user
      *
      * @param username of user that rates are requested for
-     *
      * @return List of rates
      */
     @GetMapping("/rates/{username}")

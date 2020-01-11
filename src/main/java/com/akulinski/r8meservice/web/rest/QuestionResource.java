@@ -35,6 +35,11 @@ public class QuestionResource {
         return ResponseEntity.ok(questionService.getQuestionsForUser(username));
     }
 
+    @DeleteMapping("/question/{id}")
+    public ResponseEntity deleteById(@PathVariable("id") String id) {
+        questionService.deleteById(id);
+        return ResponseEntity.accepted().build();
+    }
 
     @PostMapping("/question/add")
     public ResponseEntity addQuestion(@RequestParam("photo") MultipartFile multipartFile, @RequestParam("question") QuestionDTO questionDTO) throws URISyntaxException {

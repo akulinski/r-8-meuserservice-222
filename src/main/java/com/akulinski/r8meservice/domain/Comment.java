@@ -16,7 +16,7 @@ import java.time.Instant;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Comment implements Serializable {
+public class Comment implements Serializable, ProtectedResource {
 
     private static final long serialVersionUID = 1L;
 
@@ -30,4 +30,9 @@ public class Comment implements Serializable {
     private long poster;
 
     private long receiver;
+
+    @Override
+    public long getOwner() {
+        return poster;
+    }
 }

@@ -32,7 +32,7 @@ public class GCPStorageConfig {
     /**
      * Creates user images bucket
      * <p>
-     * If name is not available adds random string  to name until bucket is created
+     * If name is not available adds random string to name until bucket is created
      *
      * @return user img bucket
      */

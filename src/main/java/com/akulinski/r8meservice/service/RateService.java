@@ -1,9 +1,6 @@
 package com.akulinski.r8meservice.service;
 
-import com.akulinski.r8meservice.domain.Question;
-import com.akulinski.r8meservice.domain.Rate;
-import com.akulinski.r8meservice.domain.User;
-import com.akulinski.r8meservice.domain.UserProfile;
+import com.akulinski.r8meservice.domain.*;
 import com.akulinski.r8meservice.repository.UserProfileRepository;
 import com.akulinski.r8meservice.repository.UserRepository;
 import com.akulinski.r8meservice.repository.search.QuestionSearchRepository;
@@ -18,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -57,6 +53,8 @@ public class RateService {
         rate.setPoster(raterProfile.getId());
         rate.setReceiver(ratedProfile.getId());
 
+        rate.setQuestion(questionById.getId());
+
         questionById.getRates().add(rate);
 
         return rateDTO;
@@ -75,6 +73,14 @@ public class RateService {
             .flatMap(Collection::stream)
             .map(mapRateToDTOFunction())
             .collect(Collectors.toCollection(LinkedList::new));
+    }
+
+    @OwnerCheck
+    public void deleteRate(Rate rate) {
+        questionSearchRepository.findById(rate.getQuestion()).ifPresent(question -> {
+            question.getRates().remove(rate);
+            questionSearchRepository.save(question);
+        });
     }
 
     /**

@@ -114,12 +114,14 @@ public class FakerConfig {
         question.setContent(faker.lordOfTheRings().location());
         question.setLink(faker.avatar().image());
         question.setPoster(userProfile.getId());
+        question = questionSearchRepository.save(question);
 
         for (int i = 0; i < ratesPerQuestion; i++) {
             Rate rate = new Rate();
             rate.setReceiver(userProfile.getId());
             rate.setValue(faker.random().nextDouble());
             rate.setPoster(randomProfile.getId());
+            rate.setQuestion(question.getId());
             question.getRates().add(rate);
             log.debug(rate.toString());
         }
