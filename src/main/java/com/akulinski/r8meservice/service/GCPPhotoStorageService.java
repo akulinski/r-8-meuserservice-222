@@ -1,24 +1,30 @@
 package com.akulinski.r8meservice.service;
 
-import com.akulinski.r8meservice.config.cloud.GCPStorageConfig;
 import com.akulinski.r8meservice.domain.User;
 import com.akulinski.r8meservice.repository.UserRepository;
 import com.akulinski.r8meservice.repository.search.UserSearchRepository;
+import com.akulinski.r8meservice.service.util.RandomUtil;
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Bucket;
 import com.google.cloud.storage.Storage;
 import com.google.common.collect.Lists;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -29,9 +35,9 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
+@Slf4j
 public class GCPPhotoStorageService implements PhotoStorageService {
-
-    private final Logger log = LoggerFactory.getLogger(GCPStorageConfig.class);
 
     private static final String REGEX = "-\\d\\d\\d\\d-\\d\\d-\\d\\d-\\d\\d\\d\\d\\d\\d";
 
@@ -41,13 +47,12 @@ public class GCPPhotoStorageService implements PhotoStorageService {
 
     private final UserSearchRepository userSearchRepository;
 
+    private final ResourceLoader resourceLoader;
+
+    private final PasswordEncoder passwordEncoder;
+
     public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormat.forPattern("-YYYY-MM-dd-HHmmss");
 
-    public GCPPhotoStorageService(@Qualifier("userImgBucket") Bucket bucket, UserRepository userRepository, UserSearchRepository userSearchRepository) {
-        this.bucket = bucket;
-        this.userRepository = userRepository;
-        this.userSearchRepository = userSearchRepository;
-    }
 
     /**
      * Stores profile picture for user
@@ -124,7 +129,7 @@ public class GCPPhotoStorageService implements PhotoStorageService {
 
 
         final var blobWriteOption = Bucket.BlobWriteOption.predefinedAcl(Storage.PredefinedAcl.PUBLIC_READ);
-        String folder = user.getLogin()+"/"+question+"/";
+        String folder = user.getLogin() + "/" + question + "/";
 
         BlobInfo blobInfo = bucket.create(folder + fileName + ".jpg", is, blobWriteOption);
 
@@ -149,5 +154,40 @@ public class GCPPhotoStorageService implements PhotoStorageService {
 
         BlobInfo blobInfo = bucket.create(folder + fileName + ".jpg", is, blobWriteOption);
         return blobInfo.getMediaLink();
+    }
+
+    @EventListener(ApplicationReadyEvent.class)
+    @Transactional
+    public void uploadGenericProfilePicture() {
+        final var resource = resourceLoader.getResource("classpath:default-picture/icons8-name-50.png");
+        try {
+
+            MultipartFile multipartFile = new MockMultipartFile("generic.jpg", new FileInputStream(resource.getFile()));
+
+            User user = new User();
+            user.setLogin("generic");
+            user.setPassword(passwordEncoder.encode(RandomUtil.generatePassword()));
+            user = userRepository.save(user);
+
+            final var link = this.storeProfilePicture(multipartFile, user);
+
+            userRepository.findAllStreamWhereUrlIsBlank().forEach(emptyLink -> {
+                emptyLink.setImageUrl(link);
+                userRepository.save(emptyLink);
+                userSearchRepository.save(emptyLink);
+            });
+
+            userRepository.delete(user);
+            userSearchRepository.delete(user);
+        } catch (IOException e) {
+            log.error("Could not read generic user photo {}", e.getLocalizedMessage());
+        }
+
+    }
+
+    public String getGenericPhoto() {
+        User user = new User();
+        user.setLogin("generic");
+        return this.getLinkForUser(user);
     }
 }
