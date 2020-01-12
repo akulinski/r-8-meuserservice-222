@@ -107,7 +107,7 @@ public class FakerConfig {
         userProfile.setUser(user);
         userProfile = userProfileRepository.save(userProfile);
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 3; i++) {
             FollowerXFollowed followerXFollowed = new FollowerXFollowed();
             followerXFollowed.setFollowed(userProfile);
 
@@ -121,7 +121,11 @@ public class FakerConfig {
             }
 
             followerXFollowed.setFollower(randomProfile);
-            followerXFollowedRepository.save(followerXFollowed);
+            try {
+                followerXFollowedRepository.save(followerXFollowed);
+            }catch (Exception ex){
+                log.error(ex.getMessage());
+            }
         }
 
         return userProfile;

@@ -1,17 +1,23 @@
 package com.akulinski.r8meservice.domain;
+
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 
 import org.springframework.data.elasticsearch.annotations.FieldType;
+
 import java.io.Serializable;
 
 /**
  * A FollowerXFollowed.
  */
 @Entity
-@Table(name = "follower_x_followed")
+@Table(name = "follower_x_followed", uniqueConstraints = {
+    @UniqueConstraint(
+        columnNames = {"follower_id", "followed_id"}
+    )
+})
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @org.springframework.data.elasticsearch.annotations.Document(indexName = "followerxfollowed")
 public class FollowerXFollowed implements Serializable {
