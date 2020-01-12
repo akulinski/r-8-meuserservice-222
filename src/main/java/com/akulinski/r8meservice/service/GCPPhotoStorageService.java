@@ -17,6 +17,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.core.env.Environment;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,6 +30,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -40,6 +42,7 @@ import java.util.stream.Collectors;
 public class GCPPhotoStorageService implements PhotoStorageService {
 
     private static final String REGEX = "-\\d\\d\\d\\d-\\d\\d-\\d\\d-\\d\\d\\d\\d\\d\\d";
+    public static final String GENERIC = "generic";
 
     private final Bucket bucket;
 
@@ -51,7 +54,12 @@ public class GCPPhotoStorageService implements PhotoStorageService {
 
     private final PasswordEncoder passwordEncoder;
 
-    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormat.forPattern("-YYYY-MM-dd-HHmmss");
+    private final Environment environment;
+
+
+    public static final String DATE_FORMAT = "-YYYY-MM-dd-HHmmss";
+
+    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormat.forPattern(DATE_FORMAT);
 
 
     /**
@@ -91,22 +99,32 @@ public class GCPPhotoStorageService implements PhotoStorageService {
     @Override
     public String getLinkForUser(User user) {
 
-        final var list = bucket.list(Storage.BlobListOption.prefix(user.getLogin() + "/profile/"));
+        final List<Blob> collect = getBlobs(user.getLogin());
+
+        if (collect.isEmpty()) {
+            log.error("No photos found in bucket for user: {}", user.getLogin());
+            final List<Blob> collectGeneric = getBlobs(GENERIC);
+
+            if (collectGeneric.isEmpty()) {
+                throw new IllegalStateException(String.format("No photos found in bucket for user: %s and no generic photo found", user.getLogin()));
+            }
+
+            return collectGeneric.get(collectGeneric.size() - 1).getMediaLink();
+        }
+
+        return collect.get(collect.size() - 1).getMediaLink();
+    }
+
+    public List<Blob> getBlobs(String username) {
+        final var list = bucket.list(Storage.BlobListOption.prefix(username + "/profile/"));
 
         final var pattern = Pattern.compile(REGEX);
 
         ArrayList<Blob> blobs = Lists.newArrayList(list.iterateAll());
 
-        final var collect = blobs.stream()
+        return blobs.stream()
             .sorted(Comparator.comparing(parsePhotoNameToDate(pattern)))
             .collect(Collectors.toList());
-
-        if (collect.isEmpty()) {
-            log.error("No photos found in bucket for user: {}", user.getLogin());
-            throw new IllegalStateException(String.format("No photos found in bucket for user: %s", user.getLogin()));
-        }
-
-        return collect.get(collect.size() - 1).getMediaLink();
     }
 
 
@@ -142,7 +160,7 @@ public class GCPPhotoStorageService implements PhotoStorageService {
      */
     private String uploadFile(MultipartFile file, final String folder) throws IOException {
 
-        final DateTimeFormatter dtf = DateTimeFormat.forPattern("-YYYY-MM-dd-HHmmss");
+        final DateTimeFormatter dtf = DateTimeFormat.forPattern(DATE_FORMAT);
         final DateTime dt = DateTime.now(DateTimeZone.UTC);
         final String dtString = dt.toString(dtf);
 
@@ -165,11 +183,16 @@ public class GCPPhotoStorageService implements PhotoStorageService {
     public void uploadGenericProfilePicture() {
         final var resource = resourceLoader.getResource("classpath:default-picture/icons8-name-50.png");
         try {
+            final var collect = Lists.newArrayList(environment.getActiveProfiles())
+                .stream().filter("dev"::equals).collect(Collectors.toList());
 
-            MultipartFile multipartFile = new MockMultipartFile("generic.jpg", new FileInputStream(resource.getFile()));
+            if (!collect.isEmpty()) {
+                getBlobs(GENERIC).forEach(blob -> blob.delete());
+            }
+            MultipartFile multipartFile = new MockMultipartFile(GENERIC, new FileInputStream(resource.getFile()));
 
             User user = new User();
-            user.setLogin("generic");
+            user.setLogin(GENERIC);
             user.setPassword(passwordEncoder.encode(RandomUtil.generatePassword()));
             user = userRepository.save(user);
 
@@ -198,7 +221,7 @@ public class GCPPhotoStorageService implements PhotoStorageService {
      */
     public String getGenericPhoto() {
         User user = new User();
-        user.setLogin("generic");
+        user.setLogin(GENERIC);
         return this.getLinkForUser(user);
     }
 }
