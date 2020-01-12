@@ -4,6 +4,7 @@ import com.akulinski.r8meservice.domain.ProtectedResource;
 import com.akulinski.r8meservice.repository.UserProfileRepository;
 import com.akulinski.r8meservice.repository.UserRepository;
 import com.akulinski.r8meservice.security.SecurityUtils;
+import com.akulinski.r8meservice.service.ExceptionUtils;
 import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -45,10 +46,10 @@ public class SecurityAspect {
         final var protectedResource = getProtectedResourceFromArray(joinPoint.getArgs());
 
         final var userProfileFromResource = userProfileRepository.findById(protectedResource.getOwner())
-            .orElseThrow(() -> new IllegalStateException("No profile found with id: " + protectedResource.getOwner()));
+            .orElseThrow(ExceptionUtils.getNoProfileConnectedExceptionSupplier(protectedResource.getOwner()));
 
-        final var login = SecurityUtils.getCurrentUserLogin().orElseThrow(() -> new IllegalStateException("No login in security context"));
-        final var userByLogin = userRepository.findOneByLogin(login).orElseThrow(() -> new IllegalStateException(String.format("No User by login: %s", login)));
+        final var login = SecurityUtils.getCurrentUserLogin().orElseThrow(ExceptionUtils.getNoLoginInContextExceptionSupplier());
+        final var userByLogin = userRepository.findOneByLogin(login).orElseThrow(ExceptionUtils.getNoUserFoundExceptionSupplier(login));
 
         final var profileIdFromResource = userProfileFromResource.getUser().getId();
 
@@ -59,6 +60,7 @@ public class SecurityAspect {
 
         log.info("Ownership check finished");
     }
+
 
     private ProtectedResource getProtectedResourceFromArray(Object[] argsArray) {
         final var protectedResource = Lists.newArrayList(argsArray).stream()

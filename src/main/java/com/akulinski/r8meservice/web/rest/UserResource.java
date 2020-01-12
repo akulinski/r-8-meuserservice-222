@@ -2,7 +2,6 @@ package com.akulinski.r8meservice.web.rest;
 
 import com.akulinski.r8meservice.config.Constants;
 import com.akulinski.r8meservice.domain.User;
-import com.akulinski.r8meservice.domain.UserProfile;
 import com.akulinski.r8meservice.repository.FollowerXFollowedRepository;
 import com.akulinski.r8meservice.repository.UserProfileRepository;
 import com.akulinski.r8meservice.repository.UserRepository;
@@ -11,6 +10,7 @@ import com.akulinski.r8meservice.repository.search.UserProfileSearchRepository;
 import com.akulinski.r8meservice.repository.search.UserSearchRepository;
 import com.akulinski.r8meservice.security.AuthoritiesConstants;
 import com.akulinski.r8meservice.security.SecurityUtils;
+import com.akulinski.r8meservice.service.ExceptionUtils;
 import com.akulinski.r8meservice.service.MailService;
 import com.akulinski.r8meservice.service.PhotoStorageService;
 import com.akulinski.r8meservice.service.UserService;
@@ -28,9 +28,6 @@ import io.github.jhipster.web.util.ResponseUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Required;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -49,7 +46,6 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 /**
  * REST controller for managing users.
@@ -249,7 +245,7 @@ public class UserResource {
 
     private UserProfileVM getUserProfileVM(User user) {
 
-        final var profile = userProfileRepository.findByUser(user).orElseThrow(()->new IllegalStateException(String.format("No profile found for user: %d", user.getId())));
+        final var profile = userProfileRepository.findByUser(user).orElseThrow(ExceptionUtils.getNoProfileConnectedExceptionSupplier(user.getId()));
 
         return new UserProfileVM(user.getLogin(), profile.getCurrentRating(), user.getImageUrl(), followerXFollowedRepository.findAllByFollowed(profile).size(), commentSearchRepository.findAllByReceiver(profile.getId()).size());
     }
@@ -267,7 +263,7 @@ public class UserResource {
     }
 
     private User getUserFromContext() {
-        final var username = SecurityUtils.getCurrentUserLogin().orElseThrow(() -> new IllegalStateException("No Username provided"));
+        final var username = SecurityUtils.getCurrentUserLogin().orElseThrow(ExceptionUtils.getNoLoginInContextExceptionSupplier());
         return userRepository.findOneByLogin(username).orElseThrow(() -> new UsernameNotFoundException(username));
     }
 
@@ -278,13 +274,13 @@ public class UserResource {
     }
 
     private UserProfileVM getUserProfileVM() {
-        final var currentLogin = SecurityUtils.getCurrentUserLogin().orElseThrow(() -> new IllegalStateException("No login found"));
+        final var currentLogin = SecurityUtils.getCurrentUserLogin().orElseThrow(ExceptionUtils.getNoLoginInContextExceptionSupplier());
         return getUserProfileVMFromLogin(currentLogin);
     }
 
     private UserProfileVM getUserProfileVMFromLogin(String currentLogin) {
-        final var currentUser = userRepository.findOneByLogin(currentLogin).orElseThrow(() -> new IllegalStateException(String.format("User not found with login: %s", currentLogin)));
-        final var profile = userProfileRepository.findByUser(currentUser).orElseThrow(() -> new IllegalStateException(String.format("No profile is connected to user: %s", currentLogin)));
+        final var currentUser = userRepository.findOneByLogin(currentLogin).orElseThrow(ExceptionUtils.getNoUserFoundExceptionSupplier(currentLogin));
+        final var profile = userProfileRepository.findByUser(currentUser).orElseThrow(ExceptionUtils.getNoProfileConnectedExceptionSupplier(currentUser.getId()));
 
         return new UserProfileVM(currentLogin, profile.getCurrentRating(), currentUser.getImageUrl(), followerXFollowedRepository.findAllByFollowed(profile).size(), commentSearchRepository.findAllByReceiver(profile.getId()).size());
     }

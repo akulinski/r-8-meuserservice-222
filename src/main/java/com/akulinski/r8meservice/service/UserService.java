@@ -52,7 +52,6 @@ public class UserService {
 
     private final PhotoStorageService photoStorageService;
 
-
     public Optional<User> activateRegistration(String key) {
         log.debug("Activating user for activation key {}", key);
         return userRepository.findOneByActivationKey(key)

@@ -1,6 +1,9 @@
 package com.akulinski.r8meservice.web.rest.errors;
 
 import com.akulinski.r8meservice.aop.security.UnauthorizedToAccessException;
+import com.akulinski.r8meservice.service.NoLoginInContextException;
+import com.akulinski.r8meservice.service.NoProfileConnectedException;
+import com.akulinski.r8meservice.service.NoUserFoundException;
 import io.github.jhipster.web.util.HeaderUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.ConcurrencyFailureException;
@@ -123,6 +126,20 @@ public class ExceptionTranslator implements ProblemHandling, SecurityAdviceTrait
         return create(ex, request, HeaderUtil.createFailureAlert(applicationName, false, ex.getEntityName(), ex.getErrorKey(), ex.getMessage()));
     }
 
+    @ExceptionHandler
+    public ResponseEntity<Problem> handleNoLoginInContextException(NoLoginInContextException ex, NativeWebRequest request) {
+        return create(Status.UNAUTHORIZED, ex, request);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<Problem> handleNoProfileConnectedException(NoProfileConnectedException ex, NativeWebRequest request) {
+        return create(Status.CONFLICT, ex, request);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<Problem> handleNoUserFoundException(NoUserFoundException ex, NativeWebRequest request) {
+        return create(Status.CONFLICT, ex, request);
+    }
 
     @ExceptionHandler
     public ResponseEntity<Problem> handleUnauthorizedToAccessException(UnauthorizedToAccessException ex, NativeWebRequest request) {
