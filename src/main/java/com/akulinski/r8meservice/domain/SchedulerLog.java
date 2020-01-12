@@ -31,4 +31,7 @@ public class SchedulerLog extends AbstractAuditingEntity implements Serializable
     @Column(name = "scheduler_type")
     private SchedulerType schedulerType;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "scheduler_status")
+    private SchedulerStatus schedulerStatus;
 }
