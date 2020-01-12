@@ -13,4 +13,6 @@ public interface PhotoStorageService {
     String getLinkForUser(User user);
 
     String storeQuestionPhoto(User user, String question, MultipartFile file) throws IOException;
+
+    String getGenericPhoto();
 }
