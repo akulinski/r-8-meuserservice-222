@@ -26,4 +26,8 @@
     <include file="config/liquibase/changelog/20191220215841_added_entity_constraints_FollowerXFollowed.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20191220215836_added_entity_constraints_UserProfile.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
+
+    <include file="config/liquibase/changelog/20200112164658_changelog.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20200112191854_changelog.xml" relativeToChangelogFile="false"/>
+
 </databaseChangeLog>

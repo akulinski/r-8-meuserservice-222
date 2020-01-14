@@ -7,10 +7,8 @@ import com.akulinski.r8meservice.repository.UserRepository;
 import com.akulinski.r8meservice.repository.search.FollowerXFollowedSearchRepository;
 import com.akulinski.r8meservice.service.dto.FollowerXFollowedDTO;
 import com.akulinski.r8meservice.service.mapper.FollowerXFollowedMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,16 +18,16 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 
 /**
  * Service Implementation for managing {@link FollowerXFollowed}.
  */
 @Service
 @Transactional
+@RequiredArgsConstructor
+@Slf4j
 public class FollowerXFollowedService {
-
-    private final Logger log = LoggerFactory.getLogger(FollowerXFollowedService.class);
 
     private final FollowerXFollowedRepository followerXFollowedRepository;
 
@@ -40,14 +38,6 @@ public class FollowerXFollowedService {
     private final UserProfileRepository userProfileRepository;
 
     private final UserRepository userRepository;
-
-    public FollowerXFollowedService(FollowerXFollowedRepository followerXFollowedRepository, FollowerXFollowedMapper followerXFollowedMapper, FollowerXFollowedSearchRepository followerXFollowedSearchRepository, UserProfileRepository userProfileRepository, UserRepository userRepository) {
-        this.followerXFollowedRepository = followerXFollowedRepository;
-        this.followerXFollowedMapper = followerXFollowedMapper;
-        this.followerXFollowedSearchRepository = followerXFollowedSearchRepository;
-        this.userProfileRepository = userProfileRepository;
-        this.userRepository = userRepository;
-    }
 
     /**
      * Save a followerXFollowed.
@@ -84,23 +74,22 @@ public class FollowerXFollowedService {
      * @param followerXFollowedDTO
      */
     @Transactional
-    public void follow(FollowerXFollowedDTO followerXFollowedDTO){
+    public void follow(FollowerXFollowedDTO followerXFollowedDTO) {
 
-        final var followedUser = userRepository.findOneByLogin(followerXFollowedDTO.getFollowedUsername()).orElseThrow(()->
-            new UsernameNotFoundException(String.format("User with username: %s Dosnt exist", followerXFollowedDTO.getFollowedUsername())));
+        final var followedUser = userRepository.findOneByLogin(followerXFollowedDTO.getFollowedUsername()).orElseThrow(ExceptionUtils.getNoUserFoundExceptionSupplier(followerXFollowedDTO.getFollowedUsername()));
 
-        final var followerUser = userRepository.findOneByLogin(followerXFollowedDTO.getFollowerUsername()).orElseThrow(()->
-            new UsernameNotFoundException(String.format("User with username: %s Dosnt exist", followerXFollowedDTO.getFollowerUsername())));
+        final var followerUser = userRepository.findOneByLogin(followerXFollowedDTO.getFollowerUsername()).orElseThrow(ExceptionUtils.getNoUserFoundExceptionSupplier(followerXFollowedDTO.getFollowerUsername()));
 
         final var followerXFollowed = new FollowerXFollowed();
 
-        followerXFollowed.setFollowed(userProfileRepository.findByUser(followedUser).orElseThrow(()->new IllegalStateException("Profile for user: "+followedUser.getLogin()+" dosnt exist")));
-        followerXFollowed.setFollower(userProfileRepository.findByUser(followerUser).orElseThrow(()->new IllegalStateException("Profile for user: "+followerUser.getLogin()+" dosnt exist")));
+        followerXFollowed.setFollowed(userProfileRepository.findByUser(followedUser).orElseThrow(ExceptionUtils.getNoProfileConnectedExceptionSupplier(followedUser.getId())));
+
+        followerXFollowed.setFollower(userProfileRepository.findByUser(followerUser).orElseThrow(ExceptionUtils.getNoProfileConnectedExceptionSupplier(followedUser.getId())));
 
         followerXFollowedRepository.save(followerXFollowed);
         followerXFollowedSearchRepository.save(followerXFollowed);
 
-        log.info("User: {} now follows: ",followerUser.getLogin(), followedUser.getLogin());
+        log.info("User: {} now follows: {}", followerUser.getLogin(), followedUser.getLogin());
     }
 
     /**

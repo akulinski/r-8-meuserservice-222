@@ -33,9 +33,7 @@ public class ProfileCalculationService {
         log.info("Running profile scheduler ");
 
         userProfileRepository.findAllStream().forEach(userProfile -> {
-
             final var currentRating = rateService.calcAverage(userProfile);
-
             userProfile.setCurrentRating(currentRating);
             userProfileRepository.save(userProfile);
             userProfileSearchRepository.save(userProfile);

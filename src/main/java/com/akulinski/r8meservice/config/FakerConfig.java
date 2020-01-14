@@ -1,12 +1,11 @@
 package com.akulinski.r8meservice.config;
 
 import com.akulinski.r8meservice.domain.*;
-import com.akulinski.r8meservice.repository.AuthorityRepository;
+import com.akulinski.r8meservice.repository.FollowerXFollowedRepository;
 import com.akulinski.r8meservice.repository.UserProfileRepository;
 import com.akulinski.r8meservice.repository.UserRepository;
 import com.akulinski.r8meservice.repository.search.CommentSearchRepository;
 import com.akulinski.r8meservice.repository.search.QuestionSearchRepository;
-import com.akulinski.r8meservice.service.UserService;
 import com.github.javafaker.Faker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,9 +35,7 @@ public class FakerConfig {
 
     private final QuestionSearchRepository questionSearchRepository;
 
-    private final AuthorityRepository authorityRepository;
-
-    private final UserService userService;
+    private final FollowerXFollowedRepository followerXFollowedRepository;
 
     private Random random = new Random();
 
@@ -102,9 +99,33 @@ public class FakerConfig {
     }
 
     private UserProfile createUserProfile(User user) {
-        final var userProfile = new UserProfile();
+        final List<User> users = userRepository.findAll();
+
+        var userProfile = new UserProfile();
         userProfile.setUser(user);
-        userProfileRepository.save(userProfile);
+        userProfile = userProfileRepository.save(userProfile);
+
+        for (int i = 0; i < userProfileRepository.count(); i++) {
+            FollowerXFollowed followerXFollowed = new FollowerXFollowed();
+            followerXFollowed.setFollowed(userProfile);
+
+            User randomUser = users.get(random.nextInt(users.size() - 1));
+            UserProfile randomProfile = userProfileRepository.findByUser(randomUser).orElse(null);
+
+            while (randomProfile == null) {
+                randomUser = users.get(random.nextInt(users.size() - 1));
+                randomProfile = userProfileRepository.findByUser(randomUser).orElse(null);
+
+            }
+
+            followerXFollowed.setFollower(randomProfile);
+            try {
+                followerXFollowedRepository.save(followerXFollowed);
+            } catch (Exception ex) {
+                //ignore
+            }
+        }
+
         return userProfile;
     }
 

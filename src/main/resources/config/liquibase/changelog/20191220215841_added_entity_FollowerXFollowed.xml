@@ -6,7 +6,7 @@
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd
                         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
-    
+
     <!--
         Added the entity FollowerXFollowed.
     -->
@@ -16,10 +16,8 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="follower_id" type="bigint">
-                <constraints unique="true" nullable="true" uniqueConstraintName="ux_follower_x_followed_follower_id" />
             </column>
             <column name="followed_id" type="bigint">
-                <constraints unique="true" nullable="true" uniqueConstraintName="ux_follower_x_followed_followed_id" />
             </column>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>

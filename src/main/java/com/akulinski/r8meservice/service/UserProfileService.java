@@ -7,7 +7,6 @@ import com.akulinski.r8meservice.service.dto.UserProfileDTO;
 import com.akulinski.r8meservice.service.mapper.UserProfileMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,7 +16,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 
 /**
  * Service Implementation for managing {@link UserProfile}.
@@ -106,5 +105,15 @@ public class UserProfileService {
             .stream(userProfileSearchRepository.search(queryStringQuery(query)).spliterator(), false)
             .map(userProfileMapper::toDto)
             .collect(Collectors.toList());
+    }
+
+
+    public String getUsernameFromProfile(long id) {
+        return userProfileRepository.findById(id).orElseThrow(ExceptionUtils.getNoProfileConnectedExceptionSupplier(id)).getUser().getLogin();
+    }
+
+    public long getProfileIdFromUsername(String username) {
+        return userProfileRepository.findByUser_Login(username)
+            .orElseThrow(ExceptionUtils.getNoProfileConnectedExceptionSupplier(username)).getId();
     }
 }

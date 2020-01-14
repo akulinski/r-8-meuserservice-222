@@ -12,6 +12,7 @@ import com.akulinski.r8meservice.security.SecurityUtils;
 import com.akulinski.r8meservice.service.dto.SignUpAndroidDTO;
 import com.akulinski.r8meservice.service.dto.UserDTO;
 import com.akulinski.r8meservice.service.util.RandomUtil;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.CacheManager;
 import org.springframework.data.domain.Page;
@@ -32,6 +33,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 @Slf4j
+@RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
@@ -48,16 +50,7 @@ public class UserService {
 
     private final UserProfileSearchRepository userProfileSearchRepository;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserSearchRepository userSearchRepository, AuthorityRepository authorityRepository, CacheManager cacheManager, UserProfileRepository userProfileRepository, UserProfileSearchRepository userProfileSearchRepository) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.userSearchRepository = userSearchRepository;
-        this.authorityRepository = authorityRepository;
-        this.cacheManager = cacheManager;
-        this.userProfileRepository = userProfileRepository;
-        this.userProfileSearchRepository = userProfileSearchRepository;
-    }
-
+    private final PhotoStorageService photoStorageService;
 
     public Optional<User> activateRegistration(String key) {
         log.debug("Activating user for activation key {}", key);
@@ -160,6 +153,7 @@ public class UserService {
         newUser.setLastName(signUpAndroidDTO.getUsername());
         newUser.setEmail(signUpAndroidDTO.getEmail().toLowerCase());
         newUser.setLangKey("en");
+        newUser.setImageUrl(photoStorageService.getGenericPhoto());
         // new user is not active
         newUser.setActivated(false);
         // new user gets registration key
@@ -182,7 +176,7 @@ public class UserService {
         newUser.setFirstName(userDTO.getFirstName());
         newUser.setLastName(userDTO.getLastName());
         newUser.setEmail(userDTO.getEmail().toLowerCase());
-        newUser.setImageUrl(userDTO.getImageUrl());
+        newUser.setImageUrl(photoStorageService.getGenericPhoto());
         newUser.setLangKey(userDTO.getLangKey());
         // new user is not active
         newUser.setActivated(false);

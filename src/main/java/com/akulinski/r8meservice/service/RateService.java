@@ -8,7 +8,6 @@ import com.akulinski.r8meservice.security.SecurityUtils;
 import com.akulinski.r8meservice.service.dto.RateDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.common.errors.AuthenticationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,6 +56,12 @@ public class RateService {
 
         questionById.getRates().add(rate);
 
+        final var v = ((questionById.getCurrentRating() * questionById.getRates().size()) + rate.getValue()) / (questionById.getRates().size() + 1);
+
+        questionById.setCurrentRating(v);
+
+        questionSearchRepository.save(questionById);
+
         return rateDTO;
     }
 
@@ -92,8 +97,8 @@ public class RateService {
     public List<RateDTO> findAll(String useranme) {
         log.debug("Request to get all Rates for user {}", useranme);
 
-        final var user = userRepository.findOneByLogin(useranme).orElseThrow(() -> new IllegalStateException(String.format("No user found by username: %s", useranme)));
-        final var profile = userProfileRepository.findByUser(user).orElseThrow(() -> new IllegalStateException(String.format("No profile connected to user %s", user.getId())));
+        final var user = userRepository.findOneByLogin(useranme).orElseThrow(ExceptionUtils.getNoUserFoundExceptionSupplier(useranme));
+        final var profile = userProfileRepository.findByUser(user).orElseThrow(ExceptionUtils.getNoProfileConnectedExceptionSupplier(user.getId()));
 
         return questionSearchRepository.findAllByPoster(profile.getId()).stream()
             .map(Question::getRates)
@@ -104,8 +109,8 @@ public class RateService {
 
     private Function<Rate, RateDTO> mapRateToDTOFunction() {
         return rate -> {
-            final var posterProfile = userProfileRepository.findById(rate.getPoster()).orElseThrow(() -> new IllegalStateException(String.format("No user profile for id: %d", rate.getPoster())));
-            final var receiverProfile = userProfileRepository.findById(rate.getReceiver()).orElseThrow(() -> new IllegalStateException(String.format("No user profile for id: %d", rate.getReceiver())));
+            final var posterProfile = userProfileRepository.findById(rate.getPoster()).orElseThrow(ExceptionUtils.getNoProfileConnectedExceptionSupplier(rate.getPoster()));
+            final var receiverProfile = userProfileRepository.findById(rate.getReceiver()).orElseThrow(ExceptionUtils.getNoProfileConnectedExceptionSupplier(rate.getReceiver()));
             RateDTO rateDTO = new RateDTO();
             rateDTO.setValue(rate.getValue());
             rateDTO.setTimeStamp(rate.getTimeStamp());
@@ -147,6 +152,12 @@ public class RateService {
     public Double calcAverage(UserProfile profile) {
         final List<Question> allByRated = questionSearchRepository.findAllByPoster(profile.getId());
 
+        allByRated.forEach(question -> {
+            final var avgPerRate = question.getRates().stream().mapToDouble(Rate::getValue).average().orElse(-1);
+            question.setCurrentRating(avgPerRate);
+            questionSearchRepository.save(question);
+        });
+
         final Double average = allByRated.stream()
             .map(Question::getRates)
             .flatMap(Collection::stream)
@@ -166,9 +177,9 @@ public class RateService {
      * @return
      */
     private UserProfile getUserProfile() {
-        final String username = SecurityUtils.getCurrentUserLogin().orElseThrow(() -> new AuthenticationException("User not logged in"));
-        final User user = userRepository.findOneByLogin(username).orElseThrow(() -> new IllegalStateException(String.format("No user found with username: %s", username)));
-        return userProfileRepository.findByUser(user).orElseThrow(() -> new IllegalStateException(String.format("No profile found for user: %s", username)));
+        final String username = SecurityUtils.getCurrentUserLogin().orElseThrow(ExceptionUtils.getNoLoginInContextExceptionSupplier());
+        final User user = userRepository.findOneByLogin(username).orElseThrow(ExceptionUtils.getNoUserFoundExceptionSupplier(username));
+        return userProfileRepository.findByUser(user).orElseThrow(ExceptionUtils.getNoProfileConnectedExceptionSupplier(user.getId()));
     }
 
     /**
@@ -178,8 +189,8 @@ public class RateService {
      * @Param username
      */
     private UserProfile getUserProfile(String username) {
-        final User user = userRepository.findOneByLogin(username).orElseThrow(() -> new IllegalStateException(String.format("No user found with username: %s", username)));
-        return userProfileRepository.findByUser(user).orElseThrow(() -> new IllegalStateException(String.format("No profile found for user: %s", username)));
+        final User user = userRepository.findOneByLogin(username).orElseThrow(ExceptionUtils.getNoUserFoundExceptionSupplier(username));
+        return userProfileRepository.findByUser(user).orElseThrow(ExceptionUtils.getNoProfileConnectedExceptionSupplier(user.getId()));
     }
 
     public List<Rate> getAllQuestionsForRate(String id) {

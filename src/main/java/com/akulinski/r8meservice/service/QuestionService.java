@@ -32,7 +32,7 @@ public class QuestionService {
 
         Question question = new Question();
 
-        final var poster = userService.getUserWithAuthorities().orElseThrow(() -> new IllegalStateException("User no found"));
+        final var poster = userService.getUserWithAuthorities().orElseThrow(ExceptionUtils.getNoUserFoundExceptionSupplier());
         question.setPoster(poster.getId());
         var savedQuestion = questionSearchRepository.save(question);
 
@@ -50,14 +50,14 @@ public class QuestionService {
     }
 
     public List<Question> getQuestionsForUser() {
-        final var posterUser = userService.getUserWithAuthorities().orElseThrow(() -> new IllegalStateException("User no found"));
-        final var posterProfile = userProfileRepository.findByUser(posterUser).orElseThrow(() -> new IllegalStateException(String.format("No profile connected to user: %d", posterUser.getId())));
+        final var posterUser = userService.getUserWithAuthorities().orElseThrow(ExceptionUtils.getNoUserFoundExceptionSupplier());
+        final var posterProfile = userProfileRepository.findByUser(posterUser).orElseThrow(ExceptionUtils.getNoProfileConnectedExceptionSupplier(posterUser.getId()));
         return questionSearchRepository.findAllByPoster(posterProfile.getId());
     }
 
     public List<Question> getQuestionsForUser(String username) {
-        final var posterUser = userRepository.findOneByLogin(username).orElseThrow(() -> new IllegalStateException(String.format("No user found by username: %s", username)));
-        final var posterProfile = userProfileRepository.findByUser(posterUser).orElseThrow(() -> new IllegalStateException(String.format("No profile connected to user: %d", posterUser.getId())));
+        final var posterUser = userRepository.findOneByLogin(username).orElseThrow(ExceptionUtils.getNoUserFoundExceptionSupplier(username));
+        final var posterProfile = userProfileRepository.findByUser(posterUser).orElseThrow(ExceptionUtils.getNoProfileConnectedExceptionSupplier(posterUser.getId()));
         return questionSearchRepository.findAllByPoster(posterProfile.getId());
     }
 

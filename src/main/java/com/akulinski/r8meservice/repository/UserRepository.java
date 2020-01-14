@@ -54,4 +54,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @QueryHints(value = @QueryHint(name = HINT_FETCH_SIZE, value = "" + 50))
     @Query("select usr from User usr")
     Stream<User> findAllStream();
+
+    @QueryHints(value = @QueryHint(name = HINT_FETCH_SIZE, value = "" + 50))
+    @Query("select usr from User usr where usr.imageUrl='' ")
+    Stream<User> findAllStreamWhereUrlIsBlank();
 }

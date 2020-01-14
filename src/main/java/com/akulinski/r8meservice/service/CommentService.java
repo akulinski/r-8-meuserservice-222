@@ -41,9 +41,9 @@ public class CommentService {
      */
     @Transactional
     public CommentDTO save(CommentDTO commentDTO) {
-        final var receiver = userProfileRepository.findByUser_Login(commentDTO.getReceiver()).orElseThrow(() -> new UsernameNotFoundException(commentDTO.getReceiver()));
+        final var receiver = userProfileRepository.findByUser_Login(commentDTO.getReceiver()).orElseThrow(ExceptionUtils.getNoUserFoundExceptionSupplier(commentDTO.getReceiver()));
         final var poster = userProfileRepository.findByUser_Login(SecurityUtils.getCurrentUserLogin()
-            .orElseThrow(() -> new IllegalStateException("Username not present")))
+            .orElseThrow(ExceptionUtils.getNoLoginInContextExceptionSupplier()))
             .orElseThrow(() -> new UsernameNotFoundException(commentDTO.getReceiver()));
 
         if (commentDTO.getTimeStamp() == null)
@@ -84,7 +84,7 @@ public class CommentService {
     }
 
     public List<CommentDTO> findCommentsForUser() {
-        final var username = SecurityUtils.getCurrentUserLogin().orElseThrow(() -> new IllegalStateException("NO username for current user"));
+        final var username = SecurityUtils.getCurrentUserLogin().orElseThrow(ExceptionUtils.getNoLoginInContextExceptionSupplier());
         return getCommentDTOSForUsername(username);
     }
 
@@ -93,9 +93,9 @@ public class CommentService {
     }
 
     private List<CommentDTO> getCommentDTOSForUsername(String username) {
-        final var user = userRepository.findOneByLogin(username).orElseThrow(() -> new IllegalStateException(String.format("No user for username: %s", username)));
+        final var user = userRepository.findOneByLogin(username).orElseThrow(ExceptionUtils.getNoUserFoundExceptionSupplier(username));
 
-        final var userProfile = userProfileRepository.findByUser(user).orElseThrow(() -> new IllegalStateException(String.format("No profile connected to user: %s", username)));
+        final var userProfile = userProfileRepository.findByUser(user).orElseThrow(ExceptionUtils.getNoProfileConnectedExceptionSupplier(user.getId()));
 
         log.debug("Request to find all comments for user {}", username);
 
@@ -104,7 +104,7 @@ public class CommentService {
         return allByReceiver.stream().map(comment -> {
             final var commentDTO = new CommentDTO();
             try {
-                final var userProfile1 = userProfileRepository.findById(comment.getPoster()).orElseThrow(() -> new IllegalStateException(String.format("No user found by id: %d", comment.getPoster())));
+                final var userProfile1 = userProfileRepository.findById(comment.getPoster()).orElseThrow(ExceptionUtils.getNoUserFoundExceptionSupplier(String.valueOf(comment.getPoster())));
                 commentDTO.setImageUrl(userProfile1.getUser().getImageUrl());
                 commentDTO.setId(comment.getId());
                 commentDTO.setReceiver(userProfile.getUser().getLogin());

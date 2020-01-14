@@ -6,7 +6,6 @@ import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import javax.persistence.Id;
-import javax.persistence.Index;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.LinkedList;
@@ -28,6 +27,8 @@ public class Question implements Serializable, ProtectedResource {
     private Long poster;
 
     private Instant timeStamp = Instant.now();
+
+    private Double currentRating = -1D;
 
     @Field(includeInParent = true, type = FieldType.Nested)
     private List<Rate> rates;
