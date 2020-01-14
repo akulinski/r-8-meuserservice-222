@@ -11,6 +11,7 @@ public class ExceptionUtils {
     public static Supplier<NoUserFoundException> getNoUserFoundExceptionSupplier() {
         return () -> new NoUserFoundException(String.format("No User found"), "");
     }
+
     public static Supplier<NoLoginInContextException> getNoLoginInContextExceptionSupplier() {
         return () -> new NoLoginInContextException("No login in security context");
     }
@@ -19,5 +20,11 @@ public class ExceptionUtils {
         return () -> new NoProfileConnectedException(id);
     }
 
+    public static Supplier<NoProfileConnectedException> getNoProfileConnectedExceptionSupplier(String username) {
+        return () -> new NoProfileConnectedException(username);
+    }
 
+    public static Supplier<NoBoardForProfileProfileException> getNoBoardForProfileProfileException(long id) {
+        return () -> new NoBoardForProfileProfileException(String.format("No board for profile %s", id), id);
+    }
 }

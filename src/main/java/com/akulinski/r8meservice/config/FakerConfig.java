@@ -1,13 +1,11 @@
 package com.akulinski.r8meservice.config;
 
 import com.akulinski.r8meservice.domain.*;
-import com.akulinski.r8meservice.repository.AuthorityRepository;
 import com.akulinski.r8meservice.repository.FollowerXFollowedRepository;
 import com.akulinski.r8meservice.repository.UserProfileRepository;
 import com.akulinski.r8meservice.repository.UserRepository;
 import com.akulinski.r8meservice.repository.search.CommentSearchRepository;
 import com.akulinski.r8meservice.repository.search.QuestionSearchRepository;
-import com.akulinski.r8meservice.service.UserService;
 import com.github.javafaker.Faker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -107,7 +105,7 @@ public class FakerConfig {
         userProfile.setUser(user);
         userProfile = userProfileRepository.save(userProfile);
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < userProfileRepository.count(); i++) {
             FollowerXFollowed followerXFollowed = new FollowerXFollowed();
             followerXFollowed.setFollowed(userProfile);
 
@@ -123,8 +121,8 @@ public class FakerConfig {
             followerXFollowed.setFollower(randomProfile);
             try {
                 followerXFollowedRepository.save(followerXFollowed);
-            }catch (Exception ex){
-                log.error(ex.getMessage());
+            } catch (Exception ex) {
+                //ignore
             }
         }
 

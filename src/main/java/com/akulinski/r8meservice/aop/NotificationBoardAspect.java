@@ -36,14 +36,14 @@ public class NotificationBoardAspect {
         final var allByFollowed = followerXFollowedRepository.findAllByFollowed(posterProfile);
 
         allByFollowed.forEach(followerXFollowed -> {
-            final var followed = followerXFollowed.getFollowed();
+            final var follower = followerXFollowed.getFollower();
 
-            notificationBoardRepository.findByProfileId(followed.getId()).ifPresentOrElse(notificaitonBoard -> {
+            notificationBoardRepository.findByProfileId(follower.getId()).ifPresentOrElse(notificaitonBoard -> {
                 notificaitonBoard.getQuestionList().add(question);
                 notificationBoardRepository.save(notificaitonBoard);
             }, () -> {
                 NotificaitonBoard notificaitonBoard = new NotificaitonBoard();
-                notificaitonBoard.setProfileId(followed.getId());
+                notificaitonBoard.setProfileId(follower.getId());
                 notificaitonBoard.setQuestionList(List.of(question));
                 notificationBoardRepository.save(notificaitonBoard);
             });
