@@ -56,6 +56,12 @@ public class RateService {
 
         questionById.getRates().add(rate);
 
+        final var v = ((questionById.getCurrentRating() * questionById.getRates().size()) + rate.getValue()) / (questionById.getRates().size() + 1);
+
+        questionById.setCurrentRating(v);
+
+        questionSearchRepository.save(questionById);
+
         return rateDTO;
     }
 
@@ -145,6 +151,12 @@ public class RateService {
      */
     public Double calcAverage(UserProfile profile) {
         final List<Question> allByRated = questionSearchRepository.findAllByPoster(profile.getId());
+
+        allByRated.forEach(question -> {
+            final var avgPerRate = question.getRates().stream().mapToDouble(Rate::getValue).average().orElse(-1);
+            question.setCurrentRating(avgPerRate);
+            questionSearchRepository.save(question);
+        });
 
         final Double average = allByRated.stream()
             .map(Question::getRates)

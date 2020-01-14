@@ -167,7 +167,7 @@ jhipster:
     retention-period: 30 # Number of days before audit events are deleted.
 
 scheduler:
-  profilecalc: 10000000
+  profilecalc: 1000
   newscleaingscheduler: 10000
 
 mock:
