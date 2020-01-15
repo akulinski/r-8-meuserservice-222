@@ -19,7 +19,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n\t\"username\":\"admin\",\n\t\"password\":\"admin\"\n}",
+          "raw": "{\n\t\"username\":\"user\",\n\t\"password\":\"user\"\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -43,7 +43,7 @@
           "bearer": [
             {
               "key": "token",
-              "value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImF1dGgiOiJST0xFX0FETUlOLFJPTEVfVVNFUiIsImV4cCI6MTU3ODE3MjEzMX0.zWi3aPvMV0CRvgSyBrMLcNigyAtjONBj8Gdjzdw8HgLCz9jWOKUI0EMYBj0qGLbz0lTjN73Box72Ubi5VOfV7Q",
+              "value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTU3ODkwODQzMn0.EibQrjPqzwCBR_oYp-sNhM7J5Jz5u-GufTmnBNUIJmkyOMvPAQvxZX4ElHztijJbCI96b2VO3UduAygcBIL-VA",
               "type": "string"
             }
           ]
@@ -192,7 +192,7 @@
           "bearer": [
             {
               "key": "token",
-              "value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTU3ODgyNjQ2MH0.gM8uOrd6SHeawsenIc7bymG-VfrTdqdHCHEyJFztYBSMOJuuAoKDAzbi-LesJN7qFjbdsQtQFLVRShrd7PPcew",
+              "value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTU3OTEwODI4OX0.zSsiKpfndaiegrmx2i-Zz4kNsA2HjIQCudHyFqr3gglxeStU2LULUaTRGPtr8thKL21Ecbl-qvt44pvtEMDhyQ",
               "type": "string"
             }
           ]
@@ -363,7 +363,7 @@
           "bearer": [
             {
               "key": "token",
-              "value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTU3ODYwMjcwNn0.UiAEYAJhwnw09_JylsgXTV-kUBH2bif_T6dDvs4WsvVSguJuZi1ttIQIaSRvbMzsJzcgHVvVEsGQG0fVZa_psA",
+              "value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImF1dGgiOiJST0xFX0FETUlOLFJPTEVfVVNFUiIsImV4cCI6MTU3ODg2NzE3OH0.uAxKEwExYD34kgdOEC07uXHzqOqIRCbgH5KzTdagIN5QOa0vOYG7FSVwxykbrPzV-6CujEopetJxi6_3NrE3jA",
               "type": "string"
             }
           ]
@@ -387,7 +387,7 @@
           "bearer": [
             {
               "key": "token",
-              "value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTU3ODYwMjcwNn0.UiAEYAJhwnw09_JylsgXTV-kUBH2bif_T6dDvs4WsvVSguJuZi1ttIQIaSRvbMzsJzcgHVvVEsGQG0fVZa_psA",
+              "value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImF1dGgiOiJST0xFX0FETUlOLFJPTEVfVVNFUiIsImV4cCI6MTU3ODg2NzE3OH0.uAxKEwExYD34kgdOEC07uXHzqOqIRCbgH5KzTdagIN5QOa0vOYG7FSVwxykbrPzV-6CujEopetJxi6_3NrE3jA",
               "type": "string"
             }
           ]
@@ -477,10 +477,10 @@
           }
         },
         "url": {
-          "raw": "localhost:9200/question/_search",
+          "raw": "localhost:9200/notification-board/_search",
           "host": ["localhost"],
           "port": "9200",
-          "path": ["question", "_search"]
+          "path": ["notification-board", "_search"]
         }
       },
       "response": []
@@ -569,6 +569,152 @@
           "host": ["localhost"],
           "port": "8080",
           "path": ["api", "question", "8uG4k28BrOQIQOnKtzkY"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "addQuesiton",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTU3OTEwODI4OX0.zSsiKpfndaiegrmx2i-Zz4kNsA2HjIQCudHyFqr3gglxeStU2LULUaTRGPtr8thKL21Ecbl-qvt44pvtEMDhyQ",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "name": "Content-Type",
+            "value": "application/x-www-form-urlencoded",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "photo",
+              "type": "file",
+              "src": "/C:/Users/AlbertKuliński/Downloads/1eaa75496c78dc65c9c7358cd8dd759a.jpg"
+            },
+            {
+              "key": "question",
+              "value": "{\"content\":\"hej\"}",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "localhost:8080/api/question/add",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "question", "add"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "notifications",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTU3OTAzNDQzMn0.k1feEsW58oGI9m2Ch1Kr9g7zBfF_EXDXfaPL2LTJsgqLFLtfDSIvL_y4Uf2snycUv-p_OIO3cjE2Sy92mlCS1A",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "localhost:8080/api/notifications/system",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "notifications", "system"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "delate notifications",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "localhost:9200/notifications-board/",
+          "host": ["localhost"],
+          "port": "9200",
+          "path": ["notifications-board", ""]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Questions for user",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTU3OTEwODI4OX0.zSsiKpfndaiegrmx2i-Zz4kNsA2HjIQCudHyFqr3gglxeStU2LULUaTRGPtr8thKL21Ecbl-qvt44pvtEMDhyQ",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "localhost:8080/api/question/question-by-username/system",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "question", "question-by-username", "system"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "get followers",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTU3OTE5NTM3N30.lQHoIWW0cxXnIZtLJCqGwEA7JwknmkdYxkmS_5neqVYSglkFFEyUc2Ks0uscIgzjP0Jp0D4SGtijWwQBskAlTw",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "localhost:8080/api/get-followers",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "get-followers"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "get followed",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "localhost:8080/api/get-followed",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "get-followed"]
         }
       },
       "response": []

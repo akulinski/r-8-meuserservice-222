@@ -5,6 +5,8 @@ import com.akulinski.r8meservice.repository.FollowerXFollowedRepository;
 import com.akulinski.r8meservice.repository.UserProfileRepository;
 import com.akulinski.r8meservice.repository.UserRepository;
 import com.akulinski.r8meservice.repository.search.FollowerXFollowedSearchRepository;
+import com.akulinski.r8meservice.security.SecurityUtils;
+import com.akulinski.r8meservice.service.dto.FollowerDTO;
 import com.akulinski.r8meservice.service.dto.FollowerXFollowedDTO;
 import com.akulinski.r8meservice.service.mapper.FollowerXFollowedMapper;
 import lombok.RequiredArgsConstructor;
@@ -129,5 +131,31 @@ public class FollowerXFollowedService {
             .stream(followerXFollowedSearchRepository.search(queryStringQuery(query)).spliterator(), false)
             .map(followerXFollowedMapper::toDto)
             .collect(Collectors.toList());
+    }
+
+    public List<FollowerDTO> getFollowers() {
+        final var username = SecurityUtils.getCurrentUserLogin().orElseThrow(ExceptionUtils.getNoLoginInContextExceptionSupplier());
+        final var userProfile = userProfileRepository.findByUser_Login(username).orElseThrow(ExceptionUtils.getNoProfileConnectedExceptionSupplier(username));
+
+        return followerXFollowedRepository.findAllByFollowed(userProfile).stream().map(followerXFollowed -> {
+            FollowerDTO followerDTO = new FollowerDTO();
+            followerDTO.setLink(userProfileRepository.findByUser_Login(followerXFollowed.getFollower().getUser().getLogin())
+                .orElseThrow(ExceptionUtils.getNoProfileConnectedExceptionSupplier(followerXFollowed.getFollower().getUser().getLogin())).getUser().getImageUrl());
+            followerDTO.setUsername(followerXFollowed.getFollower().getUser().getLogin());
+            return followerDTO;
+        }).collect(Collectors.toList());
+    }
+
+    public List<FollowerDTO> getFollowed() {
+        final var username = SecurityUtils.getCurrentUserLogin().orElseThrow(ExceptionUtils.getNoLoginInContextExceptionSupplier());
+        final var userProfile = userProfileRepository.findByUser_Login(username).orElseThrow(ExceptionUtils.getNoProfileConnectedExceptionSupplier(username));
+
+        return followerXFollowedRepository.findAllByFollower(userProfile).stream().map(followerXFollowed -> {
+            FollowerDTO followerDTO = new FollowerDTO();
+            followerDTO.setLink(userProfileRepository.findByUser_Login(followerXFollowed.getFollowed().getUser().getLogin())
+                .orElseThrow(ExceptionUtils.getNoProfileConnectedExceptionSupplier(followerXFollowed.getFollowed().getUser().getLogin())).getUser().getImageUrl());
+            followerDTO.setUsername(followerXFollowed.getFollowed().getUser().getLogin());
+            return followerDTO;
+        }).collect(Collectors.toList());
     }
 }
