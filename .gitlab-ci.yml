@@ -37,7 +37,7 @@ maven-compile:
 maven-test:
   stage: test
   script:
-    - ./mvnw -ntp verify -Dmaven.repo.local=$MAVEN_USER_HOME
+    - ./mvnw -ntp clean install -Dmaven.repo.local=$MAVEN_USER_HOME
   artifacts:
     reports:
       junit: target/test-results/**/TEST-*.xml
