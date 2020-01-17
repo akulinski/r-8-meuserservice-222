@@ -1,6 +1,7 @@
 package com.akulinski.r8meservice.service;
 
 import com.akulinski.r8meservice.domain.FollowerXFollowed;
+import com.akulinski.r8meservice.domain.UserProfile;
 import com.akulinski.r8meservice.repository.FollowerXFollowedRepository;
 import com.akulinski.r8meservice.repository.UserProfileRepository;
 import com.akulinski.r8meservice.repository.UserRepository;
@@ -137,6 +138,10 @@ public class FollowerXFollowedService {
         final var username = SecurityUtils.getCurrentUserLogin().orElseThrow(ExceptionUtils.getNoLoginInContextExceptionSupplier());
         final var userProfile = userProfileRepository.findByUser_Login(username).orElseThrow(ExceptionUtils.getNoProfileConnectedExceptionSupplier(username));
 
+        return getFollowerDTOS(userProfile);
+    }
+
+    public List<FollowerDTO> getFollowerDTOS(UserProfile userProfile) {
         return followerXFollowedRepository.findAllByFollowed(userProfile).stream().map(followerXFollowed -> {
             FollowerDTO followerDTO = new FollowerDTO();
             followerDTO.setLink(userProfileRepository.findByUser_Login(followerXFollowed.getFollower().getUser().getLogin())
@@ -144,6 +149,12 @@ public class FollowerXFollowedService {
             followerDTO.setUsername(followerXFollowed.getFollower().getUser().getLogin());
             return followerDTO;
         }).collect(Collectors.toList());
+    }
+
+    public List<FollowerDTO> getFollowers(String username) {
+        final var userProfile = userProfileRepository.findByUser_Login(username).orElseThrow(ExceptionUtils.getNoProfileConnectedExceptionSupplier(username));
+
+        return getFollowerDTOS(userProfile);
     }
 
     public List<FollowerDTO> getFollowed() {
