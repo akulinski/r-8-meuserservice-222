@@ -56,6 +56,8 @@ public class FakerConfig {
         List<User> profiles = userRepository.findAll().stream().filter(user -> userProfileRepository.findByUser(user).isEmpty()).collect(Collectors.toList());
         profiles.forEach(this::createUserProfile);
         userRepository.findAll().forEach(this::setUpRatesAndComments);
+        userRepository.findAll().forEach(this::setUpRatesAndComments);
+
     }
 
     private UserProfile setUpRatesAndComments(User user) {
