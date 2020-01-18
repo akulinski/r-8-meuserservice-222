@@ -1,3 +1,25 @@
+<<<<<<< HEAD
+image: maven:3.6.3-jdk-11-openj9
+
+stages:
+  - test
+  - build
+
+
+test userservice:
+  stage: test
+  script:
+    - mvn clean test
+  only:
+   - develop
+
+build userservice:
+  stage: build
+  script:
+    - mvn package -DskipTests
+  only:
+    - develop
+=======
 image: jhipster/jhipster:v6.5.1
 
 cache:
@@ -78,3 +100,4 @@ maven-package:
 #    script:
 #        - ./mvnw -ntp compile jib:build -Pprod -Djib.to.image=$IMAGE_TAG -Djib.to.auth.username=gitlab-ci-token  -Djib.to.auth.password=$CI_BUILD_TOKEN -Dmaven.repo.local=$MAVEN_USER_HOME
 
+>>>>>>> 4eeb288f532aaec43bc833a07aac98c8b2efda93
