@@ -136,21 +136,27 @@ public class FollowerXFollowedResource {
         return followerXFollowedService.search(query);
     }
 
-    @GetMapping("/faves")
+    @GetMapping("/get-followers")
     @ResponseStatus(HttpStatus.OK)
     public List<FollowerDTO> getFollowers() {
         return followerXFollowedService.getFollowers();
     }
 
-    @GetMapping("/faves/{username}")
+    @GetMapping("/get-followers/{username}")
     @ResponseStatus(HttpStatus.OK)
     public List<FollowerDTO> getFollowers(@PathVariable("username") String username) {
         return followerXFollowedService.getFollowers(username);
     }
 
-    @GetMapping("/get-followed")
+    @GetMapping("/faves")
     @ResponseStatus(HttpStatus.OK)
     public List<FollowerDTO> getFollowed() {
         return followerXFollowedService.getFollowed();
+    }
+
+    @GetMapping("/faves/{username}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<FollowerDTO> getFollowed(@PathVariable("username") String username) {
+        return followerXFollowedService.getFollowed(username);
     }
 }

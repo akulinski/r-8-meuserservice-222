@@ -10,6 +10,7 @@ import com.akulinski.r8meservice.security.SecurityUtils;
 import com.akulinski.r8meservice.service.dto.FollowerDTO;
 import com.akulinski.r8meservice.service.dto.FollowerXFollowedDTO;
 import com.akulinski.r8meservice.service.mapper.FollowerXFollowedMapper;
+import com.sun.istack.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -159,6 +160,16 @@ public class FollowerXFollowedService {
 
     public List<FollowerDTO> getFollowed() {
         final var username = SecurityUtils.getCurrentUserLogin().orElseThrow(ExceptionUtils.getNoLoginInContextExceptionSupplier());
+        return getFollowerDTOS(username);
+    }
+
+
+    public List<FollowerDTO> getFollowed(String username) {
+        return getFollowerDTOS(username);
+    }
+
+    @NotNull
+    public List<FollowerDTO> getFollowerDTOS(String username) {
         final var userProfile = userProfileRepository.findByUser_Login(username).orElseThrow(ExceptionUtils.getNoProfileConnectedExceptionSupplier(username));
 
         return followerXFollowedRepository.findAllByFollower(userProfile).stream().map(followerXFollowed -> {
