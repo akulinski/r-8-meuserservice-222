@@ -1,7 +1,7 @@
 image: maven:3.6.3-jdk-11-openj9
 
 variables:
-  MVN_OPTS: "-B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -Dmaven.repo.local=/root/.m2"
+  MVN_OPTS: "-B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -Dmaven.repo.local=./.m2/repository"
 
 stages:
   - test
@@ -11,7 +11,7 @@ cache:
   key: ${CI_COMMIT_REF_SLUG}
   untracked: true
   paths:
-    - /root/.m2/
+    - ./.m2/repository
 
 test userservice:
   stage: test
