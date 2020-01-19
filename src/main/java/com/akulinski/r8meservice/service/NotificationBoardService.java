@@ -38,7 +38,7 @@ public class NotificationBoardService {
         final var userProfile = userProfileRepository.findByUser_Login(username).orElseThrow(ExceptionUtils.getNoProfileConnectedExceptionSupplier(username));
 
         return notificationBoardRepository.findByProfileId(userProfile.getId())
-            .orElseThrow(ExceptionUtils.getNoBoardForProfileProfileException(userProfile.getId()))
+            .orElseGet(() -> getNotificaitonBoard(userProfile.getId()))
             .getQuestionList();
     }
 }

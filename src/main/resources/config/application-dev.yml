@@ -171,9 +171,9 @@ scheduler:
   newscleaingscheduler: 10000
 
 mock:
-  comments: 10
-  ratesPerQuestion: 10
-  questions: 10
+  comments: 100
+  ratesPerQuestion: 100
+  questions: 3
 
 config:
   board:
