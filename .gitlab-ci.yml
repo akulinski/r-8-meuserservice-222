@@ -16,7 +16,6 @@ cache:
 test userservice:
   stage: test
   script:
-    - mkdir /root/.m2
     - mvn clean $MVN_OPTS test
   only:
    - develop
@@ -24,7 +23,6 @@ test userservice:
 build userservice:
   stage: build
   script:
-    - mkdir /root/.m2
     - mvn package $MVN_OPTS -DskipTests
   only:
     - develop
