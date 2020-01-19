@@ -672,7 +672,11 @@
                             <image>adoptopenjdk:11-jre-hotspot</image>
                         </from>
                         <to>
-                            <image>gcr.io/r8me-262821/r8meuserservice2:${project.version}</image>
+                            <image>registry.gitlab.com/r8me/r-8-meuserservice-2</image>
+                            <tags>
+                                <tag>${project.version}</tag>
+                                <tag>latest</tag>
+                            </tags>
                         </to>
                         <container>
                             <entrypoint>
