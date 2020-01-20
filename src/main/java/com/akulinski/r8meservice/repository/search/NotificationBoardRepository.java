@@ -9,6 +9,7 @@ import java.util.Optional;
 @Repository
 public interface NotificationBoardRepository extends ElasticsearchCrudRepository<NotificaitonBoard, String> {
 
+
     Optional<NotificaitonBoard> findByProfileId(long profileId);
 
 }

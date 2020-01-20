@@ -9,6 +9,7 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.Instant;
 
 /**
  * A UserProfile.
@@ -31,7 +32,13 @@ public class UserProfile implements Serializable {
     private Long id;
 
     @Column(name = "current_rating")
-    private Double currentRating;
+    private Double currentRating = -1D;
+
+    @Column(name = "rates_count")
+    private Long ratesCount = 0L;
+
+    @Column(name = "last_calc_run")
+    private Instant lastCalcRun = Instant.parse("1970-01-01T00:00:00.00Z");
 
     @OneToOne
     @JoinColumn(unique = true)

@@ -13,14 +13,6 @@ services:
       - JHIPSTER_SLEEP=30
       - 'SPRING_DATA_JEST_URI=http://r8meuserservice2-elasticsearch:9200'
       - 'SPRING_ELASTICSEARCH_REST_URIS=http://r8meuserservice2-elasticsearch:9200'
-      - KAFKA_CONSUMER_KEY_DESERIALIZER=org.apache.kafka.common.serialization.StringDeserializer
-      - KAFKA_CONSUMER_VALUE_DESERIALIZER=org.apache.kafka.common.serialization.StringDeserializer
-      - 'KAFKA_CONSUMER_BOOTSTRAP_SERVERS=kafka:9092'
-      - KAFKA_CONSUMER_GROUP_ID=r-8-meuserservice-2
-      - KAFKA_CONSUMER_AUTO_OFFSET_RESET=earliest
-      - 'KAFKA_PRODUCER_BOOTSTRAP_SERVERS=kafka:9092'
-      - KAFKA_PRODUCER_KEY_DESERIALIZER=org.apache.kafka.common.serialization.StringDeserializer
-      - KAFKA_PRODUCER_VALUE_DESERIALIZER=org.apache.kafka.common.serialization.StringDeserializer
       - JHIPSTER_LOGGING_LOGSTASH_ENABLED=true
       - JHIPSTER_LOGGING_LOGSTASH_HOST=jhipster-logstash
       - JHIPSTER_METRICS_LOGS_ENABLED=true
@@ -41,14 +33,6 @@ services:
   r8meuserservice2-redis:
     image: 'redis:5.0.6'
 
-  zookeeper:
-    extends:
-      file: kafka.yml
-      service: zookeeper
-  kafka:
-    extends:
-      file: kafka.yml
-      service: kafka
   jhipster-registry:
     extends:
       file: jhipster-registry.yml

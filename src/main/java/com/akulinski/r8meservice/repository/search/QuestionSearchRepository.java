@@ -25,6 +25,4 @@ public interface QuestionSearchRepository extends ElasticsearchCrudRepository<Qu
 
     @OwnerCheck
     void delete(@NonNull Question question);
-
-    List<Question> findByRatesContains(@NonNull Rate rate);
 }

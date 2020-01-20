@@ -1,7 +1,6 @@
 package com.akulinski.r8meservice.web.rest;
 
 import com.akulinski.r8meservice.domain.Question;
-import com.akulinski.r8meservice.domain.Rate;
 import com.akulinski.r8meservice.service.QuestionService;
 import com.akulinski.r8meservice.service.RateService;
 import com.akulinski.r8meservice.service.dto.QuestionDTO;
@@ -39,6 +38,7 @@ public class QuestionResource {
         questionVM.setLink(question.getLink());
         questionVM.setId(question.getId());
         questionVM.setCurrentRating(question.getCurrentRating());
+        questionVM.setRatesCount(question.getRatesCount());
         return questionVM;
     }
 
@@ -68,8 +68,8 @@ public class QuestionResource {
         return ResponseEntity.ok(questionService.getById(id));
     }
 
-    @GetMapping("/question/{id}/rates")
+ /*   @GetMapping("/question/{id}/rates")
     public ResponseEntity<List<Rate>> getRatesForQuestion(@PathVariable("id") String id) {
         return ResponseEntity.ok(rateService.getAllQuestionsForRate(id));
-    }
+    }*/
 }

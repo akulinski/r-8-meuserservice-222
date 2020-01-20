@@ -9,7 +9,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -21,7 +23,7 @@ public class NotificationBoardService {
     private final UserProfileRepository userProfileRepository;
 
     public List<Question> getQuestionsForUser(long userProfileId) {
-        return notificationBoardRepository.findByProfileId(userProfileId).orElseGet(() -> getNotificaitonBoard(userProfileId)).getQuestionList();
+        return notificationBoardRepository.findByProfileId(userProfileId).orElseGet(() -> getNotificaitonBoard(userProfileId)).getQuestionList().stream().sorted(Comparator.comparing(Question::getTimeStamp)).collect(Collectors.toList()).subList(0, 50);
     }
 
     public NotificaitonBoard getNotificaitonBoard(long userProfileId) {

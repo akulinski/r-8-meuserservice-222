@@ -39,6 +39,12 @@ spring:
       - swagger
       # Uncomment to activate TLS for the dev profile
       #- tls
+
+  rabbitmq:
+    username: ${RABBITMQ_USER:user}
+    password: ${RABBITMQ_PASSWORD:user}
+    host: localhost
+
   cloud:
     gcp:
       project-id: ${PROJECT_ID}
@@ -53,17 +59,9 @@ spring:
   jackson:
     serialization:
       indent-output: true
-  kafka:
-    consumer:
-      bootstrap-servers: localhost:9092
-      group-id: group_id
-      auto-offset-reset: earliest
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-    producer:
-      bootstrap-servers: localhost:9092
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+      WRITE_DATES_AS_TIMESTAMPS: false
+
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     url: jdbc:postgresql://localhost:5432/r8meuserservice2
@@ -171,8 +169,8 @@ scheduler:
   newscleaingscheduler: 10000
 
 mock:
-  comments: 100
-  ratesPerQuestion: 100
+  comments: 5
+  ratesPerQuestion: 10
   questions: 3
 
 config:
@@ -181,3 +179,12 @@ config:
   scheduler:
     news:
       timeBetween: 6
+
+properties:
+  exchange: ratesExchange
+  rateQueue: rateQueue
+  dataRequestsQueue: requests
+  dataRequestsExchange: dataRequestsExchange
+  dataResponsesQueue: responses
+  dataResponsesExchange: dataResponsesExchange
+  rateStore: rateStore

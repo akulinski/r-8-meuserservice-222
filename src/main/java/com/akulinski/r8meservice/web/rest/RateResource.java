@@ -1,19 +1,16 @@
 package com.akulinski.r8meservice.web.rest;
 
-import com.akulinski.r8meservice.domain.Rate;
 import com.akulinski.r8meservice.service.RateService;
 import com.akulinski.r8meservice.service.dto.RateDTO;
 import com.akulinski.r8meservice.web.rest.errors.BadRequestAlertException;
 import io.github.jhipster.web.util.HeaderUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
 
 /**
  * REST controller for managing {@link com.akulinski.r8meservice.domain.Rate}.
@@ -74,11 +71,11 @@ public class RateResource {
             .body(result);
     }
 
-    /**
+/*    *//**
      * {@code GET  /rates} : get all the rates.
      *
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of rates in body.
-     */
+     *//*
     @GetMapping("/rates")
     public List<RateDTO> getAllRates() {
         log.debug("REST request to get all Rates");
@@ -89,7 +86,7 @@ public class RateResource {
     public ResponseEntity deleteRate(@RequestBody Rate rate) {
         rateService.deleteRate(rate);
         return ResponseEntity.accepted().build();
-    }
+    }*/
 
     /**
      * Return rates for user
@@ -97,9 +94,9 @@ public class RateResource {
      * @param username of user that rates are requested for
      * @return List of rates
      */
-    @GetMapping("/rates/{username}")
+/*    @GetMapping("/rates/{username}")
     @ResponseStatus(HttpStatus.OK)
     public List<RateDTO> getAllRatesForUser(@PathVariable("username") String username) {
         return rateService.findAll(username);
-    }
+    }*/
 }

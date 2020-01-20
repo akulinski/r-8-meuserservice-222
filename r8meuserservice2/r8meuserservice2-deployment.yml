@@ -59,22 +59,6 @@ spec:
               value: http://r8meuserservice2-elasticsearch.default.svc.cluster.local:9200
             - name: SPRING_ELASTICSEARCH_REST_URIS
               value: http://r8meuserservice2-elasticsearch.default.svc.cluster.local:9200
-            - name: KAFKA_CONSUMER_KEY_DESERIALIZER
-              value: 'org.apache.kafka.common.serialization.StringDeserializer'
-            - name: KAFKA_CONSUMER_VALUE_DESERIALIZER
-              value: 'org.apache.kafka.common.serialization.StringDeserializer'
-            - name: KAFKA_CONSUMER_BOOTSTRAP_SERVERS
-              value: 'jhipster-kafka.default.svc.cluster.local:9092'
-            - name: KAFKA_CONSUMER_GROUP_ID
-              value: 'r8meuserservice2'
-            - name: KAFKA_CONSUMER_AUTO_OFFSET_RESET
-              value: 'earliest'
-            - name: KAFKA_PRODUCER_BOOTSTRAP_SERVERS
-              value: 'jhipster-kafka.default.svc.cluster.local:9092'
-            - name: KAFKA_PRODUCER_KEY_DESERIALIZER
-              value: 'org.apache.kafka.common.serialization.StringDeserializer'
-            - name: KAFKA_PRODUCER_VALUE_DESERIALIZER
-              value: 'org.apache.kafka.common.serialization.StringDeserializer'
             - name: JHIPSTER_METRICS_LOGS_ENABLED
               value: 'true'
             - name: JHIPSTER_LOGGING_LOGSTASH_ENABLED
