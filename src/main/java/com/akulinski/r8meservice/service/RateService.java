@@ -1,6 +1,10 @@
 package com.akulinski.r8meservice.service;
 
-import com.akulinski.r8meservice.domain.*;
+import com.akulinski.r8meservice.config.RoutingKey;
+import com.akulinski.r8meservice.domain.Question;
+import com.akulinski.r8meservice.domain.Rate;
+import com.akulinski.r8meservice.domain.User;
+import com.akulinski.r8meservice.domain.UserProfile;
 import com.akulinski.r8meservice.repository.UserProfileRepository;
 import com.akulinski.r8meservice.repository.UserRepository;
 import com.akulinski.r8meservice.repository.search.QuestionSearchRepository;
@@ -8,14 +12,13 @@ import com.akulinski.r8meservice.security.SecurityUtils;
 import com.akulinski.r8meservice.service.dto.RateDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * Service Implementation for managing {@link Rate}.
@@ -26,12 +29,16 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class RateService {
 
+    @Value("${properties.exchange}")
+    private String exchange;
 
     private final QuestionSearchRepository questionSearchRepository;
 
     private final UserRepository userRepository;
 
     private final UserProfileRepository userProfileRepository;
+
+    private final RabbitTemplate rabbitTemplate;
 
     /**
      * Save a rate.
@@ -47,29 +54,23 @@ public class RateService {
         var questionById = questionSearchRepository.findById(rateDTO.getQuestionId()).orElseThrow(() -> new IllegalStateException("No question found by id"));
 
         final UserProfile ratedProfile = getUserProfile(rateDTO.getRated());
-        final UserProfile raterProfile = getUserProfile(rateDTO.getRating());
+        final UserProfile raterProfile = getUserProfile(rateDTO.getPoster());
 
         rate.setPoster(raterProfile.getId());
         rate.setReceiver(ratedProfile.getId());
 
         rate.setQuestion(questionById.getId());
 
-        questionById.getRates().add(rate);
-
-        final var v = ((questionById.getCurrentRating() * questionById.getRates().size()) + rate.getValue()) / (questionById.getRates().size() + 1);
-
-        questionById.setCurrentRating(v);
-
-        questionSearchRepository.save(questionById);
+        rabbitTemplate.convertAndSend(exchange, RoutingKey.ANY.toString(), rate);
 
         return rateDTO;
     }
-
-    /**
+    /*
+     *//**
      * Get all the rates.
      *
      * @return the list of entities.
-     */
+     *//*
     @Transactional(readOnly = true)
     public List<RateDTO> findAll() {
         log.debug("Request to get all Rates");
@@ -88,11 +89,13 @@ public class RateService {
         });
     }
 
+    */
+
     /**
      * Get all the rates for user
      *
      * @return the list of entities.
-     */
+     *//*
     @Transactional(readOnly = true)
     public List<RateDTO> findAll(String useranme) {
         log.debug("Request to get all Rates for user {}", useranme);
@@ -105,8 +108,7 @@ public class RateService {
             .flatMap(Collection::stream)
             .map(mapRateToDTOFunction())
             .collect(Collectors.toCollection(LinkedList::new));
-    }
-
+    }*/
     private Function<Rate, RateDTO> mapRateToDTOFunction() {
         return rate -> {
             final var posterProfile = userProfileRepository.findById(rate.getPoster()).orElseThrow(ExceptionUtils.getNoProfileConnectedExceptionSupplier(rate.getPoster()));
@@ -127,41 +129,10 @@ public class RateService {
      *
      * @return average of rates
      */
-    public Double calcAverage() {
-        final UserProfile profile = getUserProfile();
-        final List<Question> allByRated = questionSearchRepository.findAllByPoster(profile.getId());
+    public Double calcAverage(UserProfile profile, List<Question> allByRated) {
 
         final Double average = allByRated.stream()
-            .map(Question::getRates)
-            .flatMap(Collection::stream)
-            .mapToDouble(Rate::getValue)
-            .average().orElse(-1.0);
-
-        profile.setCurrentRating(average);
-        userProfileRepository.save(profile);
-
-        return average;
-    }
-
-
-    /**
-     * Calculates average of rates for user
-     *
-     * @return average of rates
-     */
-    public Double calcAverage(UserProfile profile) {
-        final List<Question> allByRated = questionSearchRepository.findAllByPoster(profile.getId());
-
-        allByRated.forEach(question -> {
-            final var avgPerRate = question.getRates().stream().mapToDouble(Rate::getValue).average().orElse(-1);
-            question.setCurrentRating(avgPerRate);
-            questionSearchRepository.save(question);
-        });
-
-        final Double average = allByRated.stream()
-            .map(Question::getRates)
-            .flatMap(Collection::stream)
-            .mapToDouble(Rate::getValue)
+            .mapToDouble(Question::getCurrentRating)
             .average().orElse(-1.0);
 
         profile.setCurrentRating(average);
@@ -193,9 +164,4 @@ public class RateService {
         return userProfileRepository.findByUser(user).orElseThrow(ExceptionUtils.getNoProfileConnectedExceptionSupplier(user.getId()));
     }
 
-    public List<Rate> getAllQuestionsForRate(String id) {
-        return questionSearchRepository.findById(id)
-            .orElseThrow(() -> new IllegalStateException(String.format("No question found by id: %s", id)))
-            .getRates();
-    }
 }

@@ -2,12 +2,7 @@ package com.akulinski.r8meservice;
 
 import com.akulinski.r8meservice.config.ApplicationProperties;
 import com.akulinski.r8meservice.config.DefaultProfileUtil;
-
-import com.akulinski.r8meservice.service.R8Meuserservice2KafkaConsumer;
-import com.akulinski.r8meservice.service.R8Meuserservice2KafkaProducer;
-import org.springframework.context.ConfigurableApplicationContext;
 import io.github.jhipster.config.JHipsterConstants;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +12,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.Environment;
 
 import java.net.InetAddress;
@@ -27,7 +23,7 @@ import java.util.Collection;
 @SpringBootApplication
 @EnableConfigurationProperties({LiquibaseProperties.class, ApplicationProperties.class})
 @EnableDiscoveryClient
-public class  R8Meuserservice2App implements InitializingBean {
+public class R8Meuserservice2App implements InitializingBean {
 
     private static final Logger log = LoggerFactory.getLogger(R8Meuserservice2App.class);
 
@@ -66,8 +62,6 @@ public class  R8Meuserservice2App implements InitializingBean {
         SpringApplication app = new SpringApplication(R8Meuserservice2App.class);
         DefaultProfileUtil.addDefaultProfile(app);
         ConfigurableApplicationContext applicationContext = app.run(args);
-        applicationContext.getBean(R8Meuserservice2KafkaProducer.class).init();
-        applicationContext.getBean(R8Meuserservice2KafkaConsumer.class).start();
         Environment env = applicationContext.getEnvironment();
         logApplicationStartup(env);
     }

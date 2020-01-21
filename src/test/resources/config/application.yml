@@ -118,17 +118,6 @@ jhipster:
   cache:
     redis:
       server: ${redis.test.server}
-kafka:
-  consumer:
-    key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
-    value.deserializer: org.apache.kafka.common.serialization.StringDeserializer
-    bootstrap.servers: ${kafkaBootstrapServers}
-    group.id: r-8-meuserservice-2
-    auto.offset.reset: earliest
-  producer:
-    key.serializer: org.apache.kafka.common.serialization.StringSerializer
-    value.serializer: org.apache.kafka.common.serialization.StringSerializer
-    bootstrap.servers: ${kafkaBootstrapServers}
 # ===================================================================
 # Application specific properties
 # Add your own application properties here, see the ApplicationProperties class

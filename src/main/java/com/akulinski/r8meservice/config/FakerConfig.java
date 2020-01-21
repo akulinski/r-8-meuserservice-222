@@ -6,6 +6,8 @@ import com.akulinski.r8meservice.repository.UserProfileRepository;
 import com.akulinski.r8meservice.repository.UserRepository;
 import com.akulinski.r8meservice.repository.search.CommentSearchRepository;
 import com.akulinski.r8meservice.repository.search.QuestionSearchRepository;
+import com.akulinski.r8meservice.service.RateService;
+import com.akulinski.r8meservice.service.dto.RateDTO;
 import com.github.javafaker.Faker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +38,8 @@ public class FakerConfig {
     private final QuestionSearchRepository questionSearchRepository;
 
     private final FollowerXFollowedRepository followerXFollowedRepository;
+
+    private final RateService rateService;
 
     private Random random = new Random();
 
@@ -140,13 +144,13 @@ public class FakerConfig {
         question = questionSearchRepository.save(question);
 
         for (int i = 0; i < ratesPerQuestion; i++) {
-            Rate rate = new Rate();
-            rate.setReceiver(userProfile.getId());
+            RateDTO rate = new RateDTO();
             rate.setValue(faker.random().nextDouble());
-            rate.setPoster(randomProfile.getId());
-            rate.setQuestion(question.getId());
-            question.getRates().add(rate);
+            rate.setPoster(randomProfile.getUser().getLogin());
+            rate.setRated(userProfile.getUser().getLogin());
+            rate.setQuestionId(question.getId());
             log.debug(rate.toString());
+            rateService.save(rate);
         }
 
         log.debug(question.toString());
