@@ -55,9 +55,9 @@ public class QuestionResource {
     }
 
     @PostMapping("/question/add")
-    public ResponseEntity addQuestion(@RequestParam("photo") MultipartFile multipartFile, @RequestParam("question") QuestionDTO questionDTO) throws URISyntaxException {
+    public ResponseEntity addQuestion(@RequestParam("photo") MultipartFile multipartFile, @RequestParam("question") String questionJson) throws URISyntaxException {
 
-        final var question = questionService.createQuestion(questionDTO, multipartFile);
+        final var question = questionService.createQuestion(questionJson, multipartFile);
         log.debug("question added with id {}", question.getId());
 
         return ResponseEntity.created(new URI(String.format("/api/question/%s", question.getId()))).build();

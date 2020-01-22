@@ -4,7 +4,7 @@ import com.akulinski.r8meservice.domain.Question;
 import com.akulinski.r8meservice.repository.UserProfileRepository;
 import com.akulinski.r8meservice.repository.UserRepository;
 import com.akulinski.r8meservice.repository.search.QuestionSearchRepository;
-import com.akulinski.r8meservice.service.dto.QuestionDTO;
+import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,18 +28,20 @@ public class QuestionService {
 
     private final UserRepository userRepository;
 
-    public Question createQuestion(QuestionDTO questionDTO, MultipartFile multipartFile) {
+    public Question createQuestion(String questionContent, MultipartFile multipartFile) {
 
         Question question = new Question();
 
         final var poster = userService.getUserWithAuthorities().orElseThrow(ExceptionUtils.getNoUserFoundExceptionSupplier());
-        question.setPoster(poster.getId());
+        final var posterProfile = userProfileRepository.findByUser(poster).orElseThrow(ExceptionUtils.getNoProfileConnectedExceptionSupplier(poster.getLogin()));
+        question.setPoster(posterProfile.getId());
         var savedQuestion = questionSearchRepository.save(question);
 
         try {
             final var link = photoStorageService.storeQuestionPhoto(poster, savedQuestion.getId(), multipartFile);
             question.setLink(link);
-            question.setContent(questionDTO.getContent());
+
+            question.setContent(new Gson().fromJson(questionContent, Question.class).getContent());
             savedQuestion = questionSearchRepository.save(question);
         } catch (IOException e) {
             log.debug(e.getLocalizedMessage());
