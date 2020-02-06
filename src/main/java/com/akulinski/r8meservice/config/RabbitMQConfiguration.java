@@ -1,6 +1,7 @@
 package com.akulinski.r8meservice.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -104,6 +105,6 @@ public class RabbitMQConfiguration {
     @Bean
     @Primary
     public ObjectMapper getObjectMapper() {
-        return new ObjectMapper().findAndRegisterModules();
+        return new ObjectMapper().findAndRegisterModules().disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }
 }

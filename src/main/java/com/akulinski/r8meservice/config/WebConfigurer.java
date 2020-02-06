@@ -54,7 +54,7 @@ public class WebConfigurer implements ServletContextInitializer, WebServerFactor
             initCachingHttpHeadersFilter(servletContext, disps);
         }
         if (env.acceptsProfiles(Profiles.of(JHipsterConstants.SPRING_PROFILE_DEVELOPMENT))) {
-            initH2Console(servletContext);
+            //
         }
         log.info("Web application fully configured");
     }
@@ -140,14 +140,6 @@ public class WebConfigurer implements ServletContextInitializer, WebServerFactor
             source.registerCorsConfiguration("/v2/api-docs", config);
         }
         return new CorsFilter(source);
-    }
-
-    /**
-     * Initializes H2 console.
-     */
-    private void initH2Console(ServletContext servletContext) {
-        log.debug("Initialize H2 console");
-        H2ConfigurationHelper.initH2Console(servletContext);
     }
 
 }

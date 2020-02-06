@@ -16,4 +16,6 @@ public class QuestionVM implements Serializable {
     private Double currentRating;
 
     private Long ratesCount;
+
+    private boolean alreadyRated;
 }

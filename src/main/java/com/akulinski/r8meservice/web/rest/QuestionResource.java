@@ -1,9 +1,10 @@
 package com.akulinski.r8meservice.web.rest;
 
 import com.akulinski.r8meservice.domain.Question;
-import com.akulinski.r8meservice.service.QuestionService;
-import com.akulinski.r8meservice.service.RateService;
-import com.akulinski.r8meservice.service.dto.QuestionDTO;
+import com.akulinski.r8meservice.security.SecurityUtils;
+import com.akulinski.r8meservice.service.*;
+import com.akulinski.r8meservice.service.dto.BulkCheckDTO;
+import com.akulinski.r8meservice.service.dto.QuestionIdUserDTO;
 import com.akulinski.r8meservice.web.rest.vm.QuestionVM;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RestController
@@ -24,10 +26,13 @@ public class QuestionResource {
 
     private final QuestionService questionService;
 
-    private final RateService rateService;
+    private final QuestionCheckingService questionCheckingService;
+    private final UserProfileService userProfileService;
+    private final QuestionClient questionClient;
 
     @GetMapping("/question")
     public ResponseEntity<List<QuestionVM>> getAllQuestionsForUser() {
+
         return ResponseEntity.ok(questionService.getQuestionsForUser().stream()
             .map(this::getQuestionVM).collect(Collectors.toList()));
     }
@@ -44,8 +49,27 @@ public class QuestionResource {
 
     @GetMapping("/question/question-by-username/{username}")
     public ResponseEntity<List<QuestionVM>> getAllQuestionsForAnyUser(@PathVariable("username") String username) {
-        return ResponseEntity.ok(questionService.getQuestionsForUser(username).stream()
-            .map(this::getQuestionVM).collect(Collectors.toList()));
+        final var questionsForUser = questionService.getQuestionsForUser(username);
+
+        BulkCheckDTO bulkCheckDTO = new BulkCheckDTO();
+
+        final var profileFromUsername = userProfileService.getProfileFromUsername(SecurityUtils.getCurrentUserLogin().orElseThrow(ExceptionUtils.getNoLoginInContextExceptionSupplier()));
+
+        final var questionIdUserDTOS = questionsForUser.stream().map(question -> new QuestionIdUserDTO(question.getId(), profileFromUsername.getId(), false)).collect(Collectors.toList());
+        bulkCheckDTO.setQuestionIdUserDTOS(questionIdUserDTOS);
+        bulkCheckDTO.setUser(profileFromUsername.getId());
+        final var bulkCheckDTOResponse = questionClient.checkBulk(bulkCheckDTO);
+
+        final var collect = questionsForUser.stream().map(question -> getQuestionVM(question)).collect(Collectors.toList());
+
+        bulkCheckDTOResponse.getQuestionIdUserDTOS().forEach(questionIdUserDTO -> {
+            final var questionVM1 = collect.stream().filter(questionVM -> Objects.equals(questionVM.getId(), questionIdUserDTO.getQuestion())).findFirst().orElse(new QuestionVM());
+            collect.remove(questionVM1);
+            questionVM1.setAlreadyRated(true);
+            collect.add(questionVM1);
+        });
+
+        return ResponseEntity.ok(collect);
     }
 
     @DeleteMapping("/question/{id}")
@@ -68,8 +92,4 @@ public class QuestionResource {
         return ResponseEntity.ok(questionService.getById(id));
     }
 
- /*   @GetMapping("/question/{id}/rates")
-    public ResponseEntity<List<Rate>> getRatesForQuestion(@PathVariable("id") String id) {
-        return ResponseEntity.ok(rateService.getAllQuestionsForRate(id));
-    }*/
 }

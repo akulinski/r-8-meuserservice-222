@@ -173,3 +173,12 @@ config:
   scheduler:
     news:
       timeBetween: 6
+
+properties:
+  exchange: ratesExchange
+  rateQueue: rateQueue
+  dataRequestsQueue: requests
+  dataRequestsExchange: dataRequestsExchange
+  dataResponsesQueue: responses
+  dataResponsesExchange: dataResponsesExchange
+  rateStore: rateStore

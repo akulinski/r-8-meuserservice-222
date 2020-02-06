@@ -71,32 +71,4 @@ public class RateResource {
             .body(result);
     }
 
-/*    *//**
-     * {@code GET  /rates} : get all the rates.
-     *
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of rates in body.
-     *//*
-    @GetMapping("/rates")
-    public List<RateDTO> getAllRates() {
-        log.debug("REST request to get all Rates");
-        return rateService.findAll();
-    }
-
-    @DeleteMapping("/rates")
-    public ResponseEntity deleteRate(@RequestBody Rate rate) {
-        rateService.deleteRate(rate);
-        return ResponseEntity.accepted().build();
-    }*/
-
-    /**
-     * Return rates for user
-     *
-     * @param username of user that rates are requested for
-     * @return List of rates
-     */
-/*    @GetMapping("/rates/{username}")
-    @ResponseStatus(HttpStatus.OK)
-    public List<RateDTO> getAllRatesForUser(@PathVariable("username") String username) {
-        return rateService.findAll(username);
-    }*/
 }

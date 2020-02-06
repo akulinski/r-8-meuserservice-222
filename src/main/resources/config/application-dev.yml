@@ -170,7 +170,7 @@ scheduler:
 
 mock:
   comments: 5
-  ratesPerQuestion: 10
+  ratesPerQuestion: 100
   questions: 3
 
 config:

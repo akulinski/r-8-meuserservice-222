@@ -11,9 +11,12 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.Environment;
+import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -23,6 +26,9 @@ import java.util.Collection;
 @SpringBootApplication
 @EnableConfigurationProperties({LiquibaseProperties.class, ApplicationProperties.class})
 @EnableDiscoveryClient
+@EnableFeignClients
+@EnableCircuitBreaker
+@EnableElasticsearchRepositories("com.akulinski.r8meservice.repository.search")
 public class R8Meuserservice2App implements InitializingBean {
 
     private static final Logger log = LoggerFactory.getLogger(R8Meuserservice2App.class);

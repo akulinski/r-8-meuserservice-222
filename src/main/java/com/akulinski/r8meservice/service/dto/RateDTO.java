@@ -27,4 +27,5 @@ public class RateDTO implements Serializable {
 
     private String posterLink;
 
+    private boolean alreadyRated;
 }

@@ -1,3 +1,4 @@
+/*
 package com.akulinski.r8meservice.config;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -70,3 +71,4 @@ public class ElasticsearchConfiguration {
     }
 
 }
+*/

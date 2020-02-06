@@ -116,4 +116,9 @@ public class UserProfileService {
         return userProfileRepository.findByUser_Login(username)
             .orElseThrow(ExceptionUtils.getNoProfileConnectedExceptionSupplier(username)).getId();
     }
+
+    public UserProfile getProfileFromUsername(String username) {
+        return userProfileRepository.findByUser_Login(username)
+            .orElseThrow(ExceptionUtils.getNoProfileConnectedExceptionSupplier(username));
+    }
 }

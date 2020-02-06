@@ -1,14 +1,12 @@
 package com.akulinski.r8meservice.service;
 
 import com.akulinski.r8meservice.config.RoutingKey;
-import com.akulinski.r8meservice.domain.Question;
 import com.akulinski.r8meservice.domain.Rate;
 import com.akulinski.r8meservice.domain.User;
 import com.akulinski.r8meservice.domain.UserProfile;
 import com.akulinski.r8meservice.repository.UserProfileRepository;
 import com.akulinski.r8meservice.repository.UserRepository;
 import com.akulinski.r8meservice.repository.search.QuestionSearchRepository;
-import com.akulinski.r8meservice.security.SecurityUtils;
 import com.akulinski.r8meservice.service.dto.RateDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +15,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.function.Function;
 
 /**
@@ -65,50 +62,7 @@ public class RateService {
 
         return rateDTO;
     }
-    /*
-     *//**
-     * Get all the rates.
-     *
-     * @return the list of entities.
-     *//*
-    @Transactional(readOnly = true)
-    public List<RateDTO> findAll() {
-        log.debug("Request to get all Rates");
-        return questionSearchRepository.findAllQuestions().stream()
-            .map(Question::getRates)
-            .flatMap(Collection::stream)
-            .map(mapRateToDTOFunction())
-            .collect(Collectors.toCollection(LinkedList::new));
-    }
 
-    @OwnerCheck
-    public void deleteRate(Rate rate) {
-        questionSearchRepository.findById(rate.getQuestion()).ifPresent(question -> {
-            question.getRates().remove(rate);
-            questionSearchRepository.save(question);
-        });
-    }
-
-    */
-
-    /**
-     * Get all the rates for user
-     *
-     * @return the list of entities.
-     *//*
-    @Transactional(readOnly = true)
-    public List<RateDTO> findAll(String useranme) {
-        log.debug("Request to get all Rates for user {}", useranme);
-
-        final var user = userRepository.findOneByLogin(useranme).orElseThrow(ExceptionUtils.getNoUserFoundExceptionSupplier(useranme));
-        final var profile = userProfileRepository.findByUser(user).orElseThrow(ExceptionUtils.getNoProfileConnectedExceptionSupplier(user.getId()));
-
-        return questionSearchRepository.findAllByPoster(profile.getId()).stream()
-            .map(Question::getRates)
-            .flatMap(Collection::stream)
-            .map(mapRateToDTOFunction())
-            .collect(Collectors.toCollection(LinkedList::new));
-    }*/
     private Function<Rate, RateDTO> mapRateToDTOFunction() {
         return rate -> {
             final var posterProfile = userProfileRepository.findById(rate.getPoster()).orElseThrow(ExceptionUtils.getNoProfileConnectedExceptionSupplier(rate.getPoster()));
@@ -123,35 +77,6 @@ public class RateService {
         };
     }
 
-
-    /**
-     * Calculates average of rates for user
-     *
-     * @return average of rates
-     */
-    public Double calcAverage(UserProfile profile, List<Question> allByRated) {
-
-        final Double average = allByRated.stream()
-            .mapToDouble(Question::getCurrentRating)
-            .average().orElse(-1.0);
-
-        profile.setCurrentRating(average);
-        userProfileRepository.save(profile);
-
-        return average;
-    }
-
-
-    /**
-     * Returns user profile based on spring security context
-     *
-     * @return
-     */
-    private UserProfile getUserProfile() {
-        final String username = SecurityUtils.getCurrentUserLogin().orElseThrow(ExceptionUtils.getNoLoginInContextExceptionSupplier());
-        final User user = userRepository.findOneByLogin(username).orElseThrow(ExceptionUtils.getNoUserFoundExceptionSupplier(username));
-        return userProfileRepository.findByUser(user).orElseThrow(ExceptionUtils.getNoProfileConnectedExceptionSupplier(user.getId()));
-    }
 
     /**
      * Returns user profile based on passed username
