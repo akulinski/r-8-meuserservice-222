@@ -46,7 +46,6 @@ public class RateResource {
         }
         RateDTO result = rateService.save(rateDTO);
         return ResponseEntity.created(new URI("/api/rates/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
 

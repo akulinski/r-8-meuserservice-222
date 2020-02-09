@@ -3,8 +3,7 @@ package com.akulinski.r8meservice.web.rest;
 import com.akulinski.r8meservice.domain.Question;
 import com.akulinski.r8meservice.security.SecurityUtils;
 import com.akulinski.r8meservice.service.*;
-import com.akulinski.r8meservice.service.dto.BulkCheckDTO;
-import com.akulinski.r8meservice.service.dto.QuestionIdUserDTO;
+import com.akulinski.r8meservice.service.dto.QuestionCheckDTO;
 import com.akulinski.r8meservice.web.rest.vm.QuestionVM;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -50,22 +50,24 @@ public class QuestionResource {
     @GetMapping("/question/question-by-username/{username}")
     public ResponseEntity<List<QuestionVM>> getAllQuestionsForAnyUser(@PathVariable("username") String username) {
         final var questionsForUser = questionService.getQuestionsForUser(username);
+        long profileIdFromUsername = userProfileService.getProfileIdFromUsername(SecurityUtils.getCurrentUserLogin().orElseThrow(ExceptionUtils.getNoLoginInContextExceptionSupplier()));
+        List<QuestionCheckDTO> questionCheckDTOs = new ArrayList<>();
 
-        BulkCheckDTO bulkCheckDTO = new BulkCheckDTO();
+        questionsForUser.forEach(question -> {
+            QuestionCheckDTO questionCheckDTO = new QuestionCheckDTO();
+            questionCheckDTO.setQuestion(question.getId());
+            questionCheckDTO.setPoster(profileIdFromUsername);
+            questionCheckDTOs.add(questionCheckDTO);
+        });
 
-        final var profileFromUsername = userProfileService.getProfileFromUsername(SecurityUtils.getCurrentUserLogin().orElseThrow(ExceptionUtils.getNoLoginInContextExceptionSupplier()));
+        final var bulkCheckDTOResponse = questionClient.checkBulk(questionCheckDTOs);
 
-        final var questionIdUserDTOS = questionsForUser.stream().map(question -> new QuestionIdUserDTO(question.getId(), profileFromUsername.getId(), false)).collect(Collectors.toList());
-        bulkCheckDTO.setQuestionIdUserDTOS(questionIdUserDTOS);
-        bulkCheckDTO.setUser(profileFromUsername.getId());
-        final var bulkCheckDTOResponse = questionClient.checkBulk(bulkCheckDTO);
+        final var collect = questionsForUser.stream().map(this::getQuestionVM).collect(Collectors.toList());
 
-        final var collect = questionsForUser.stream().map(question -> getQuestionVM(question)).collect(Collectors.toList());
-
-        bulkCheckDTOResponse.getQuestionIdUserDTOS().forEach(questionIdUserDTO -> {
+        bulkCheckDTOResponse.forEach(questionIdUserDTO -> {
             final var questionVM1 = collect.stream().filter(questionVM -> Objects.equals(questionVM.getId(), questionIdUserDTO.getQuestion())).findFirst().orElse(new QuestionVM());
             collect.remove(questionVM1);
-            questionVM1.setAlreadyRated(true);
+            questionVM1.setAlreadyRated(questionIdUserDTO.isRated());
             collect.add(questionVM1);
         });
 
