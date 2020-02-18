@@ -6,7 +6,7 @@ variables:
 stages:
   - test
   - build
-  - push
+# - push
 
 cache:
   key: ${CI_COMMIT_REF_SLUG}
@@ -32,13 +32,13 @@ build userservice:
   only:
     - develop
 
-push userservice:
-  image: docker:19.03.1-dind
-  stage: push
-  before_script:
-    - docker login -u $CI_REPO_USER -p $CI_REPO_PASS $CI_REPO
-  script:
-    - docker build -t $CI_REPO:$CI_COMMIT_BRANCH .
-    - docker push $CI_REPO:$CI_COMMIT_BRANCH
-  only:
-    - develop
+      #push userservice:
+      #  image: docker:19.03.1-dind
+      #  stage: push
+      #  before_script:
+      #    - docker login -u $CI_REPO_USER -p $CI_REPO_PASS $CI_REPO
+      #  script:
+      #    - docker build -t $CI_REPO:$CI_COMMIT_BRANCH .
+      #    - docker push $CI_REPO:$CI_COMMIT_BRANCH
+      #  only:
+      #    - develop
